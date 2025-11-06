@@ -1,16 +1,14 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
+  preset: 'ts-jest',
   testEnvironment: 'node',
-  transform: {
-    '^.+\.tsx?$': ['ts-jest', {
-      tsconfig: {
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true,
-      }
-    }],
-  },
   verbose: true,
   testTimeout: 30000,
+  maxWorkers: 1,
+  testMatch: [
+    '**/__tests__/**/*.test.ts',
+    '**/tests/**/*.test.ts',
+  ],
   collectCoverage: process.env.COLLECT_COVERAGE === 'true',
   collectCoverageFrom: [
     'src/**/*.ts',
@@ -25,15 +23,9 @@ module.exports = {
       statements: 50,
     }
   },
-  maxWorkers: 1,
-  testMatch: [
-    '**/__tests__/**/*.test.ts',
-    '**/tests/**/*.test.ts',
-  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['/node_modules/'],
   globals: {
     'ts-jest': {
