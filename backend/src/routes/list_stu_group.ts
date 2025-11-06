@@ -4,8 +4,8 @@ import models from '../util/database';
 export default async function (app: FastifyInstance) {
     const GroupMembers = models.Group_Member;
     // Route: GET /list_stu_group/:studentID - returns groups for a student
-    app.get<{ Params: { studentID: number} }>('/list_stu_group/:studentID', async (req, resp) => {
-        const sID = req.params.studentID;
+    app.get<{ Params: { studentID: string } }>('/list_stu_group/:studentID', async (req, resp) => {
+        const sID = parseInt(req.params.studentID, 10);
         try {
             const groups = await GroupMembers.findAll({
                 where: {

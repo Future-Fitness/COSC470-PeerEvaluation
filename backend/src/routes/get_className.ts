@@ -13,7 +13,7 @@ export default async function (app: FastifyInstance) {
             });
 
             if (!classData) {
-                resp.send(null);
+                resp.status(404).send({ error: 'Class not found' });
                 return;
             }
 
