@@ -10,7 +10,7 @@ echo "Integration Test Runner"
 echo "==================================="
 
 # Configuration
-API_URL=${API_URL:-"http://localhost:3000"}
+API_URL=${API_URL:-"http://localhost:5000"}
 BACKEND_PID=""
 
 # Cleanup function
@@ -43,10 +43,10 @@ echo "Initializing database schema and test data..."
 mysql -u ${MYSQL_USER:-root} -p${MYSQL_PASS:-password} ${MYSQL_DB:-cosc471} < ../schema.sql
 echo "✓ Database initialized with test data"
 
-# Start backend server in background
+# Start backend server in background (listen on PORT=5000)
 echo ""
-echo "Starting backend server..."
-npm start > /tmp/backend-server.log 2>&1 &
+echo "Starting backend server on port 5000..."
+PORT=5000 npm start > /tmp/backend-server.log 2>&1 &
 BACKEND_PID=$!
 echo "Backend server started (PID: $BACKEND_PID)"
 

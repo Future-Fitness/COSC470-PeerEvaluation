@@ -114,7 +114,7 @@ jobs:
           MYSQL_USER: root
           MYSQL_PASS: testpassword
           MYSQL_DB: cosc471
-          PORT: 3000
+          PORT: 5000
         run: |
           echo "Starting backend server..."
           npm start > /tmp/backend-server.log 2>&1 &
@@ -134,7 +134,7 @@ jobs:
         run: |
           echo "Waiting for backend HTTP server..."
           for i in {1..60}; do
-            if curl -sSf http://localhost:3000/ping >/dev/null 2>&1; then
+            if curl -sSf http://localhost:5000/ping >/dev/null 2>&1; then
               echo "✓ Backend is ready and responding!"
               break
             fi
@@ -143,7 +143,7 @@ jobs:
           done
 
           # Final verification
-          if ! curl -sSf http://localhost:3000/ping >/dev/null 2>&1; then
+          if ! curl -sSf http://localhost:5000/ping >/dev/null 2>&1; then
             echo "✗ ERROR: Backend failed to become ready"
             echo "========================================="
             echo "Backend Server Logs:"
@@ -158,7 +158,7 @@ jobs:
         id: auth-tests
         working-directory: ./backend
         env:
-          API_URL: http://localhost:3000
+          API_URL: http://localhost:5000
         run: |
           echo "========================================="
           echo "Running: Authentication Tests"
@@ -170,7 +170,7 @@ jobs:
         id: classes-tests
         working-directory: ./backend
         env:
-          API_URL: http://localhost:3000
+          API_URL: http://localhost:5000
         run: |
           echo "========================================="
           echo "Running: Classes Tests"
@@ -182,7 +182,7 @@ jobs:
         id: assignments-tests
         working-directory: ./backend
         env:
-          API_URL: http://localhost:3000
+          API_URL: http://localhost:5000
         run: |
           echo "========================================="
           echo "Running: Assignments Tests"
@@ -194,7 +194,7 @@ jobs:
         id: groups-tests
         working-directory: ./backend
         env:
-          API_URL: http://localhost:3000
+          API_URL: http://localhost:5000
         run: |
           echo "========================================="
           echo "Running: Groups Tests"
@@ -206,7 +206,7 @@ jobs:
         id: rubrics-tests
         working-directory: ./backend
         env:
-          API_URL: http://localhost:3000
+          API_URL: http://localhost:5000
         run: |
           echo "========================================="
           echo "Running: Rubrics & Reviews Tests"

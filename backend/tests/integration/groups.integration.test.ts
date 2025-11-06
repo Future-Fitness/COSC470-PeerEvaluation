@@ -15,7 +15,7 @@ import axios, { AxiosError } from 'axios';
 import { describe, expect, test, beforeAll } from '@jest/globals';
 
 // Configuration
-const API_BASE_URL = process.env.API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.API_URL || 'http://localhost:5000';
 const TEST_TIMEOUT = 10000; // 10 seconds
 
 // Test user credentials
@@ -261,7 +261,7 @@ describe('Groups Integration Tests', () => {
     }, TEST_TIMEOUT);
   });
 
-  describe('GET /list_group_members/:groupID', () => {
+  describe('GET /list_group_members/:assignmentID/:groupID', () => {
     let testGroupId: number;
 
     beforeAll(async () => {
@@ -284,7 +284,7 @@ describe('Groups Integration Tests', () => {
 
     test('should return list of group members', async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/list_group_members/${testGroupId}`,
+        `${API_BASE_URL}/list_group_members/${testAssignmentId}/${testGroupId}`,
         {
           headers: {
             Authorization: createBearerAuthHeader(studentToken),
@@ -299,7 +299,7 @@ describe('Groups Integration Tests', () => {
 
     test('should return empty array for group with no members', async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/list_group_members/${testGroupId}`,
+        `${API_BASE_URL}/list_group_members/${testAssignmentId}/${testGroupId}`,
         {
           headers: {
             Authorization: createBearerAuthHeader(studentToken),
@@ -313,7 +313,9 @@ describe('Groups Integration Tests', () => {
 
     test('should fail without authentication', async () => {
       try {
-        await axios.get(`${API_BASE_URL}/list_group_members/${testGroupId}`);
+        await axios.get(
+          `${API_BASE_URL}/list_group_members/${testAssignmentId}/${testGroupId}`
+        );
         throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
@@ -322,7 +324,7 @@ describe('Groups Integration Tests', () => {
     }, TEST_TIMEOUT);
   });
 
-  describe('DELETE /delete_group/:groupID', () => {
+  describe('POST /delete_group', () => {
     test('should delete a group successfully', async () => {
       // Create a group to delete
       const groupId = Math.floor(Math.random() * 1000000);
@@ -341,8 +343,9 @@ describe('Groups Integration Tests', () => {
       );
 
       // Delete the group
-      const response = await axios.delete(
-        `${API_BASE_URL}/delete_group/${groupId}`,
+      const response = await axios.post(
+        `${API_BASE_URL}/delete_group`,
+        { groupID: groupId },
         {
           headers: {
             Authorization: createBearerAuthHeader(teacherToken),
@@ -367,8 +370,9 @@ describe('Groups Integration Tests', () => {
     }, TEST_TIMEOUT);
 
     test('should handle deleting non-existent group', async () => {
-      const response = await axios.delete(
-        `${API_BASE_URL}/delete_group/999999`,
+      const response = await axios.post(
+        `${API_BASE_URL}/delete_group`,
+        { groupID: 999999 },
         {
           headers: {
             Authorization: createBearerAuthHeader(teacherToken),
@@ -382,7 +386,7 @@ describe('Groups Integration Tests', () => {
 
     test('should fail without authentication', async () => {
       try {
-        await axios.delete(`${API_BASE_URL}/delete_group/1`);
+        await axios.post(`${API_BASE_URL}/delete_group`, { groupID: 1 });
         throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;

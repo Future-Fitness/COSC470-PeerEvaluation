@@ -18,7 +18,7 @@ import axios, { AxiosError } from 'axios';
 import { describe, expect, test, beforeAll, afterEach } from '@jest/globals';
 
 // Configuration
-const API_BASE_URL = process.env.API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.API_URL || 'http://localhost:5000';
 const TEST_TIMEOUT = 10000; // 10 seconds
 
 // Test user credentials (must match test-seed.sql)
@@ -120,7 +120,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader('nonexistent', 'password'),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -134,7 +134,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader(testUsers.student.username, 'wrongpassword'),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -144,7 +144,7 @@ describe('Authentication Integration Tests', () => {
     test('should fail with missing Authorization header', async () => {
       try {
         await axios.get(`${API_BASE_URL}/login`);
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -158,7 +158,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: 'InvalidHeader',
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -172,7 +172,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader('', ''),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -252,7 +252,7 @@ describe('Authentication Integration Tests', () => {
     test('should fail to access protected endpoint without token', async () => {
       try {
         await axios.get(`${API_BASE_URL}/user_id`);
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -266,7 +266,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBearerAuthHeader('invalid-token-123'),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -280,7 +280,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: 'Bearer',
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -294,7 +294,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader(testUsers.student.username, testUsers.student.password),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -395,7 +395,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader(testUsers.student.username, 'p@$$w0rd!#$'),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -409,7 +409,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader('TEST', testUsers.student.password), // Uppercase
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -423,7 +423,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBasicAuthHeader(testUsers.student.username, 'TEST'), // Uppercase of 'test'
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);
@@ -438,7 +438,7 @@ describe('Authentication Integration Tests', () => {
             Authorization: createBearerAuthHeader(veryLongToken),
           },
         });
-        fail('Expected request to fail');
+        throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
         expect(axiosError.response?.status).toBe(401);

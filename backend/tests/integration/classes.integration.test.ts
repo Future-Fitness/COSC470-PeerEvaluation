@@ -15,7 +15,7 @@ import axios, { AxiosError } from 'axios';
 import { describe, expect, test, beforeAll } from '@jest/globals';
 
 // Configuration
-const API_BASE_URL = process.env.API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.API_URL || 'http://localhost:5000';
 const TEST_TIMEOUT = 10000; // 10 seconds
 
 // Test user credentials
@@ -245,14 +245,18 @@ describe('Classes Integration Tests', () => {
     }, TEST_TIMEOUT);
   });
 
-  describe('GET /class_members/:courseID', () => {
+  describe('POST /classes/members', () => {
     test('should return class members for valid course', async () => {
       // Assuming course ID 1 exists from seed data
-      const response = await axios.get(`${API_BASE_URL}/class_members/1`, {
-        headers: {
-          Authorization: createBearerAuthHeader(teacherToken),
-        },
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/classes/members`,
+        { id: 1 },
+        {
+          headers: {
+            Authorization: createBearerAuthHeader(teacherToken),
+          },
+        }
+      );
 
       expect(response.status).toBe(200);
       expect(Array.isArray(response.data)).toBe(true);
@@ -260,11 +264,15 @@ describe('Classes Integration Tests', () => {
 
     test('should return empty array for course with no members', async () => {
       // Use a non-existent course ID
-      const response = await axios.get(`${API_BASE_URL}/class_members/999999`, {
-        headers: {
-          Authorization: createBearerAuthHeader(teacherToken),
-        },
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/classes/members`,
+        { id: 999999 },
+        {
+          headers: {
+            Authorization: createBearerAuthHeader(teacherToken),
+          },
+        }
+      );
 
       expect(response.status).toBe(200);
       expect(Array.isArray(response.data)).toBe(true);
@@ -273,7 +281,7 @@ describe('Classes Integration Tests', () => {
 
     test('should fail without authentication', async () => {
       try {
-        await axios.get(`${API_BASE_URL}/class_members/1`);
+        await axios.post(`${API_BASE_URL}/classes/members`, { id: 1 });
         throw new Error('Expected request to fail');
       } catch (error) {
         const axiosError = error as AxiosError;
