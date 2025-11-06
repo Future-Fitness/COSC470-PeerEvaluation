@@ -363,20 +363,7 @@ jobs:
           echo "Test Results Breakdown:"
           echo "========================================="
           
-          PASSED=0
-          FAILED=0
-          
-          [ "${{ steps.auth-tests.outcome }}" = "success" ] && ((PASSED++)) || ((FAILED++))
-          [ "${{ steps.classes-tests.outcome }}" = "success" ] && ((PASSED++)) || ((FAILED++))
-          [ "${{ steps.assignments-tests.outcome }}" = "success" ] && ((PASSED++)) || ((FAILED++))
-          [ "${{ steps.groups-tests.outcome }}" = "success" ] && ((PASSED++)) || ((FAILED++))
-          [ "${{ steps.rubrics-tests.outcome }}" = "success" ] && ((PASSED++)) || ((FAILED++))
-          
-          echo "✓ Passed: $PASSED"
-          echo "✗ Failed: $FAILED"
-          echo "Total:   5"
-          echo ""
-          echo "========================================="
+         
       
           echo "========================================="
 
@@ -387,8 +374,4 @@ jobs:
           echo "========================================="
           echo "Cleanup"
           echo "========================================="
-          if [ -f /tmp/backend-server.pid ]; then
-            PID=$(cat /tmp/backend-server.pid)
-            kill $PID 2>/dev/null || true
-            echo "Backend server stopped"
-          fi
+       
