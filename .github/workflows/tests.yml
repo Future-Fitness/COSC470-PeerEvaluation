@@ -377,12 +377,7 @@ jobs:
           echo "Total:   5"
           echo ""
           echo "========================================="
-          
-          if [ $FAILED -eq 0 ]; then
-            echo "✓ ALL TESTS PASSED!"
-          else
-            echo "✗ SOME TESTS FAILED - See above for details"
-          fi
+      
           echo "========================================="
 
 
