@@ -1,2 +1,39 @@
 .env
 .tap/
+node_modules/
+node_modules/**/*
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build / output
+dist/
+build/
+out/
+public/build/
+
+# Testing / coverage
+coverage/
+.nyc_output/
+
+# Caches
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Misc
+*.log

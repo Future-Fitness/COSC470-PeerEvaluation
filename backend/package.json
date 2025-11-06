@@ -6,6 +6,15 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "DANGEROUS_DISABLE_ALL_AUTH=true jest",
+    "test:unit": "DANGEROUS_DISABLE_ALL_AUTH=true jest --testPathIgnorePatterns=integration",
+    "test:integration": "bash run-integration-tests.sh",
+    "test:integration:all": "jest tests/integration/*.test.ts --runInBand",
+    "test:integration:auth": "jest tests/integration/auth.integration.test.ts --runInBand",
+    "test:integration:classes": "jest tests/integration/classes.integration.test.ts --runInBand",
+    "test:integration:assignments": "jest tests/integration/assignments.integration.test.ts --runInBand",
+    "test:integration:groups": "jest tests/integration/groups.integration.test.ts --runInBand",
+    "test:integration:rubrics": "jest tests/integration/rubrics-reviews.integration.test.ts --runInBand",
+    "test:wait": "ts-node tests/wait-for-server.ts",
     "gen-schema": "ts-node generate.ts"
   },
   "dependencies": {
@@ -21,6 +30,8 @@
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@stylistic/eslint-plugin-ts": "^3.0.1",
+    "@types/node": "^24.10.0",
+    "axios": "^1.13.2",
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
     "jest": "^29.7.0",

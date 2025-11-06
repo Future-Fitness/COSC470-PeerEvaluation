@@ -1,0 +1,192 @@
+name: API Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  integration-tests:
+    name: Run All Integration Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: cosc471
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: pnpm install
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h"127.0.0.1" -P3306 -uroot -ptestpassword --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
+
+      - name: Initialize database schema and seed test data
+        working-directory: ./backend
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_PASS: testpassword
+          MYSQL_DB: cosc471
+        run: |
+          mysql -h127.0.0.1 -P3306 -uroot -ptestpassword cosc471 < ../schema.sql
+          echo "✓ Database initialized with schema and test data"
+
+      - name: Start backend server
+        working-directory: ./backend
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_PASS: testpassword
+          MYSQL_DB: cosc471
+          PORT: 3000
+        run: |
+          npm start > /tmp/backend-server.log 2>&1 &
+          echo $! > /tmp/backend-server.pid
+          echo "Backend server started with PID: $(cat /tmp/backend-server.pid)"
+
+      - name: Wait for backend to be ready
+        working-directory: ./backend
+        env:
+          API_URL: http://localhost:3000
+        run: npm run test:wait
+
+      - name: Run Authentication Tests
+        id: auth-tests
+        working-directory: ./backend
+        env:
+          API_URL: http://localhost:3000
+        run: |
+          echo "========================================="
+          echo "Running: Authentication Tests"
+          echo "========================================="
+          npm run test:integration:auth
+        continue-on-error: false
+
+      - name: Run Classes Tests
+        id: classes-tests
+        working-directory: ./backend
+        env:
+          API_URL: http://localhost:3000
+        run: |
+          echo "========================================="
+          echo "Running: Classes Tests"
+          echo "========================================="
+          npm run test:integration:classes
+        continue-on-error: false
+
+      - name: Run Assignments Tests
+        id: assignments-tests
+        working-directory: ./backend
+        env:
+          API_URL: http://localhost:3000
+        run: |
+          echo "========================================="
+          echo "Running: Assignments Tests"
+          echo "========================================="
+          npm run test:integration:assignments
+        continue-on-error: false
+
+      - name: Run Groups Tests
+        id: groups-tests
+        working-directory: ./backend
+        env:
+          API_URL: http://localhost:3000
+        run: |
+          echo "========================================="
+          echo "Running: Groups Tests"
+          echo "========================================="
+          npm run test:integration:groups
+        continue-on-error: false
+
+      - name: Run Rubrics & Reviews Tests
+        id: rubrics-tests
+        working-directory: ./backend
+        env:
+          API_URL: http://localhost:3000
+        run: |
+          echo "========================================="
+          echo "Running: Rubrics & Reviews Tests"
+          echo "========================================="
+          npm run test:integration:rubrics
+        continue-on-error: false
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "========================================="
+          echo "Integration Tests Summary"
+          echo "========================================="
+          echo ""
+          echo "Test Suites Executed:"
+          echo "  ✓ Authentication Tests"
+          echo "  ✓ Classes Tests"
+          echo "  ✓ Assignments Tests"
+          echo "  ✓ Groups Tests"
+          echo "  ✓ Rubrics & Reviews Tests"
+          echo ""
+          echo "Results:"
+          echo "  - Auth Tests:        ${{ steps.auth-tests.outcome }}"
+          echo "  - Classes Tests:     ${{ steps.classes-tests.outcome }}"
+          echo "  - Assignments Tests: ${{ steps.assignments-tests.outcome }}"
+          echo "  - Groups Tests:      ${{ steps.groups-tests.outcome }}"
+          echo "  - Rubrics Tests:     ${{ steps.rubrics-tests.outcome }}"
+          echo ""
+          echo "========================================="
+          echo "For detailed test results, check each test step above"
+          echo "========================================="
+
+      - name: Display backend logs on failure
+        if: failure()
+        run: |
+          echo "========================================="
+          echo "Backend Server Logs"
+          echo "========================================="
+          cat /tmp/backend-server.log || echo "No logs found"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f /tmp/backend-server.pid ]; then
+            PID=$(cat /tmp/backend-server.pid)
+            kill $PID 2>/dev/null || true
+            echo "Backend server stopped"
+          fi
