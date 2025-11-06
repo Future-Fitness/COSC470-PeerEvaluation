@@ -9,14 +9,14 @@ export default function (app: FastifyInstance) {
     // This should contain basic auth header
     const auth = req.headers.authorization;
     if (!auth) {
-      resp.status(400).send('Bad request');
+      resp.status(401).send('Unauthorized');
       return;
     }
 
     // Validate authorization header format
     const parts = auth.split(' ');
     if (parts.length !== 2) {
-      resp.status(400).send('Bad request - invalid authorization format');
+      resp.status(401).send('Unauthorized - invalid authorization format');
       return;
     }
 
@@ -24,7 +24,7 @@ export default function (app: FastifyInstance) {
 
     // Only accept Basic authentication (case-insensitive)
     if (authType.toLowerCase() !== 'basic') {
-      resp.status(400).send('Bad request - must use Basic authentication');
+      resp.status(401).send('Unauthorized - must use Basic authentication');
       return;
     }
 
@@ -36,7 +36,7 @@ export default function (app: FastifyInstance) {
       const colonIndex = decoded.indexOf(':');
 
       if (colonIndex === -1) {
-        resp.status(400).send('Bad request - invalid credentials format');
+        resp.status(401).send('Unauthorized - invalid credentials format');
         return;
       }
 
@@ -44,7 +44,7 @@ export default function (app: FastifyInstance) {
       user = decoded.substring(0, colonIndex);
       pass = decoded.substring(colonIndex + 1);
     } catch (error) {
-      resp.status(400).send('Bad request - invalid base64 encoding');
+      resp.status(401).send('Unauthorized - invalid base64 encoding');
       return;
     }
 
