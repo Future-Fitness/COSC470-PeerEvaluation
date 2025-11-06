@@ -81,7 +81,9 @@ CREATE TABLE Criteria_Description (
 -- Credentials: test / 1234
 INSERT INTO User (id, name, email, is_teacher, hash_pass)
   VALUES (1, 'test', 'test@test.com', false, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
-         (2, 'test2', 'test2@test.com', true, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db');
+         (2, 'test2', 'test2@test.com', true, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
+         (3, 'alice', 'alice@example.com', false, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf'),
+         (4, 'professor', 'prof@example.com', true, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf');
 INSERT INTO Assignment(id, courseID, name, rubric)
     VALUES(1,1,"test","test-rubric");
 

@@ -7,14 +7,20 @@ export default async function (app: FastifyInstance) {
     app.get<{ Params: { classID: number } }>('/get_className/:classID', async (req, resp) => {
         const cID = req.params.classID;
         
-        const classData = await CourseModel.findOne({
-            where: { id: cID },
-        });
+        try {
+            const classData = await CourseModel.findOne({
+                where: { id: cID },
+            });
 
-        if (!classData) {
-            return resp.status(404).send({ error: 'Class not found' });
+            if (!classData) {
+                resp.send(null);
+                return;
+            }
+
+            resp.send({ className: classData.name });
+        } catch (error) {
+            console.error('Error fetching class name:', error);
+            resp.status(500).send({ error: 'Failed to fetch class name' });
         }
-
-        resp.send({ className: classData.name });
     });
 }

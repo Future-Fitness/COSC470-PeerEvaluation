@@ -3,28 +3,19 @@ import models from '../util/database';
 
 export default async function (app: FastifyInstance) {
     const GroupMembers = models.Group_Member;
-    app.get<{ Params: { assignmentID: number , studentID: number} }>('/list_stu_groups/:assignmentID/:studentID', async (req, resp) => {
-        const aID = req.params.assignmentID;
+    // Route: GET /list_stu_group/:studentID - returns groups for a student
+    app.get<{ Params: { studentID: number} }>('/list_stu_group/:studentID', async (req, resp) => {
         const sID = req.params.studentID;
-        const group = await GroupMembers.findOne({
-            where: {
-                userID: sID,
-                assignmentID: aID
-            }
-        });
-        if(!group?.groupID){
-            resp.code(300);
-            resp.send({
-                msg: 'student has no group'
-            })
+        try {
+            const groups = await GroupMembers.findAll({
+                where: {
+                    userID: sID
+                }
+            });
+            resp.send(groups);
+        } catch (error) {
+            console.error('Error fetching student groups:', error);
+            resp.status(500).send({ error: 'Failed to fetch student groups' });
         }
-
-        const members = await GroupMembers.findAll({
-            where: {
-                assignmentID: aID,
-                groupID: group?.groupID
-            }
-        });
-        resp.send(members);
     });
 }
