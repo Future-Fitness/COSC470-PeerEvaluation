@@ -385,59 +385,6 @@ jobs:
           fi
           echo "========================================="
 
-      - name: Display backend logs on failure
-        if: failure()
-        run: |
-          echo ""
-          echo "========================================="
-          echo "FAILURE DIAGNOSTICS"
-          echo "========================================="
-          echo ""
-          
-          echo "========================================="
-          echo "Backend Server Logs (Full)"
-          echo "========================================="
-          if [ -f /tmp/backend-server.log ]; then
-            wc -l /tmp/backend-server.log
-            echo "---"
-            cat /tmp/backend-server.log
-          else
-            echo "No logs found"
-          fi
-
-          echo ""
-          echo "========================================="
-          echo "Backend Process Status"
-          echo "========================================="
-          if [ -f /tmp/backend-server.pid ]; then
-            PID=$(cat /tmp/backend-server.pid)
-            echo "Expected PID: $PID"
-            if ps -p $PID > /dev/null; then
-              echo "✓ Process is still running"
-              ps -p $PID -o pid,vsz,rss,cmd
-            else
-              echo "✗ Process has exited"
-            fi
-          else
-            echo "No PID file found"
-          fi
-
-          echo ""
-          echo "========================================="
-          echo "Network Status (Port 5000)"
-          echo "========================================="
-          sudo netstat -tlnp 2>/dev/null | grep :5000 || echo "Port 5000 not in use"
-          echo ""
-          echo "Testing connectivity:"
-          curl -sSv http://localhost:5000/ping || echo "Failed to connect"
-
-          echo ""
-          echo "========================================="
-          echo "Available Logs in /tmp"
-          echo "========================================="
-          ls -lah /tmp/*.log 2>/dev/null || echo "No log files found"
-
-
 
       - name: Cleanup
         if: always()
