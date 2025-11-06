@@ -45,13 +45,7 @@ jobs:
           npm run test:unit -- --verbose --coverage
         continue-on-error: false
 
-      - name: Upload coverage reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-coverage
-          path: backend/coverage
-          retention-days: 30
+
 
   integration-tests:
     name: Run All Integration Tests
@@ -441,13 +435,7 @@ jobs:
           echo "========================================="
           ls -lah /tmp/*.log 2>/dev/null || echo "No log files found"
 
-      - name: Upload test logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-failure-logs
-          path: /tmp/backend-server.log
-          retention-days: 7
+
 
       - name: Cleanup
         if: always()
