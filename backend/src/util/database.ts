@@ -17,3 +17,4 @@ const client = new Sequelize({
 const models = initModels(client);
 
 export default models;
+export { client as sequelize };
