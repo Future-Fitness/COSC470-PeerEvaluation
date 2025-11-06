@@ -42,6 +42,9 @@ jobs:
         with:
           version: 9
 
+      - name: Install pnpm globally
+        run: npm install -g pnpm
+
       - name: Install backend dependencies
         working-directory: ./backend
         run: pnpm install
