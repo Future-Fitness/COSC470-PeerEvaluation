@@ -5,6 +5,20 @@ import Textbox from '../components/Textbox';
 import Button from '../components/Button';
 import { tryLogin } from '../util/api';
 
+interface TestCredential {
+  username: string;
+  password: string;
+  role: string;
+  description: string;
+}
+
+const TEST_CREDENTIALS: TestCredential[] = [
+  { username: 'test', password: '1234', role: 'Student', description: 'Test Student Account' },
+  { username: 'test2', password: '1234', role: 'Teacher', description: 'Test Teacher Account' },
+  { username: 'alice', password: 'password123', role: 'Student', description: 'Alice (Student)' },
+  { username: 'professor', password: 'password123', role: 'Teacher', description: 'Professor Account' },
+];
+
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +43,23 @@ export default function LoginPage() {
     if (e.key === 'Enter') {
       attemptLogin();
     }
-  }
+  };
+
+  const quickLogin = async (cred: TestCredential) => {
+    setUsername(cred.username);
+    setPassword(cred.password);
+    setError('');
+    const result = await tryLogin(cred.username, cred.password);
+
+    if (result.error) {
+      setError(result.message);
+      return;
+    }
+
+    if (result.token) {
+      navigate('/home');
+    }
+  };
 
   return (
     <div className="LoginPage">
@@ -48,6 +78,7 @@ export default function LoginPage() {
                   placeholder='Enter your username...'
                   onInput={setUsername}
                   className='LoginInput'
+                  value={username}
                 />
               </div>
 
@@ -59,6 +90,7 @@ export default function LoginPage() {
                   onInput={setPassword}
                   className='LoginInput'
                   onKeyPress={handleKeyPress}
+                  value={password}
                 />
               </div>
             </div>
@@ -70,6 +102,32 @@ export default function LoginPage() {
               className="LoginButton"
               children="Sign In"
             />
+
+            <div className="LoginFooterLink">
+              <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+            </div>
+
+            <div className="QuickLoginSection">
+              <div className="QuickLoginHeader">
+                <span className="QuickLoginTitle">Quick Login (Test Accounts)</span>
+              </div>
+              <div className="QuickLoginGrid">
+                {TEST_CREDENTIALS.map((cred, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="QuickLoginCard"
+                    onClick={() => quickLogin(cred)}
+                  >
+                    <div className="QuickLoginRole">{cred.role}</div>
+                    <div className="QuickLoginDescription">{cred.description}</div>
+                    <div className="QuickLoginCredentials">
+                      <span>{cred.username}</span> / <span>{cred.password}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="LoginFooter">

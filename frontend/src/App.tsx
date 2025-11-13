@@ -6,6 +6,7 @@ import "./App.css";
 import Profile from "./pages/Profile";
 import CreateClass from "./pages/CreateClass";
 import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 import ClassHome from "./pages/ClassHome";
 import ClassMembers from "./pages/ClassMembers";
 import Assignment from "./pages/Assignment";
@@ -14,7 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
-  const showSidebar = location.pathname !== '/';
+  const showSidebar = location.pathname !== '/' && location.pathname !== '/signup';
 
   return (
     <div className="App">
@@ -22,6 +23,7 @@ function AppContent() {
       <div className="inner">
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Home />} />
             <Route path="/classes/create" element={<CreateClass />} />

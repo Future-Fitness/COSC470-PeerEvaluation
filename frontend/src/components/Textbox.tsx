@@ -6,6 +6,7 @@ interface Props {
   placeholder?: string
   type?: string
   onKeyPress?: (e: React.KeyboardEvent) => void
+  value?: string
 }
 
 export default function Textbox(props: Props) {
@@ -14,13 +15,11 @@ export default function Textbox(props: Props) {
       type={props.type || 'text'}
       className={'Textbox ' + props.className}
       placeholder={props.placeholder}
-      onInput={(e) => {
-        e.preventDefault()
+      value={props.value}
+      onChange={(e) => {
         if (!props?.onInput) {
           return
         }
-
-        // @ts-expect-error womp womp
         props.onInput(e.target.value)
       }}
       onKeyPress={props.onKeyPress}

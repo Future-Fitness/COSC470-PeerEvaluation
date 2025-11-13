@@ -1,4 +1,4 @@
-.LoginPage {
+.SignupPage {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,7 +11,7 @@
   padding: 20px;
 }
 
-.LoginContainer {
+.SignupContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +20,7 @@
   max-width: 450px;
 }
 
-.LoginBlock {
+.SignupBlock {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -31,10 +31,10 @@
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  min-height: 480px;
+  min-height: 560px;
 }
 
-.LoginHeader {
+.SignupHeader {
   background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
   color: white;
   padding: 40px 30px 30px;
@@ -56,34 +56,34 @@
   font-weight: 400;
 }
 
-.LoginForm {
+.SignupForm {
   display: flex;
   flex-direction: column;
   padding: 30px;
   flex: 1;
 }
 
-.LoginInputs {
+.SignupInputs {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 25px;
   width: 100%;
 }
 
-.LoginInputChunk {
+.SignupInputChunk {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.LoginInputChunk label {
+.SignupInputChunk label {
   font-size: 0.95rem;
   font-weight: 600;
   color: #1e40af;
 }
 
-.LoginInput {
+.SignupInput {
   padding: 12px 14px;
   border: 2px solid #e5e7eb;
   border-radius: 8px;
@@ -92,7 +92,7 @@
   background: white;
 }
 
-.LoginInput:focus {
+.SignupInput:focus {
   outline: none;
   border-color: #3b82f6;
   background-color: #eff6ff;
@@ -105,12 +105,23 @@
   border: 1px solid #fecaca;
   border-radius: 6px;
   padding: 12px 14px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.LoginButton {
+.SuccessMessage {
+  color: #15803d;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.SignupBlock button {
   background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
   color: white !important;
   padding: 12px 24px !important;
@@ -124,129 +135,49 @@
   margin-bottom: 0;
 }
 
-.LoginButton:hover:not(:disabled) {
+.SignupBlock button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3) !important;
   filter: brightness(1.05) !important;
 }
 
-.LoginButton:active:not(:disabled) {
+.SignupBlock button:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.LoginFooterLink {
+.SignupFooterLink {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid #e5e7eb;
 }
 
-.LoginFooterLink p {
+.SignupFooterLink p {
   margin: 0;
   font-size: 0.9rem;
   color: #6b7280;
 }
 
-.LoginFooterLink a {
+.SignupFooterLink a {
   color: #1e40af;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
-.LoginFooterLink a:hover {
+.SignupFooterLink a:hover {
   color: #3b82f6;
   text-decoration: underline;
 }
 
-.QuickLoginSection {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.QuickLoginHeader {
-  margin-bottom: 12px;
-}
-
-.QuickLoginTitle {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.QuickLoginGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.QuickLoginCard {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  font-family: inherit;
-}
-
-.QuickLoginCard:hover {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-}
-
-.QuickLoginCard:active {
-  transform: translateY(0);
-}
-
-.QuickLoginRole {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  padding: 3px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-  align-self: flex-start;
-}
-
-.QuickLoginDescription {
-  font-size: 0.85rem;
-  color: #1f2937;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-
-.QuickLoginCredentials {
-  font-size: 0.75rem;
-  color: #6b7280;
-  font-family: 'Courier New', monospace;
-}
-
-.QuickLoginCredentials span {
-  color: #1e40af;
-  font-weight: 600;
-}
-
-.LoginFooter {
+.SignupFooter {
   border-top: 1px solid #e5e7eb;
   padding: 20px 30px;
   text-align: center;
   background-color: #f9fafb;
 }
 
-.LoginFooter .Credits {
+.Credits {
   margin: 0;
   font-size: 0.85rem;
   color: #6b7280;
@@ -255,19 +186,19 @@
 }
 
 @media (max-width: 600px) {
-  .LoginPage {
+  .SignupPage {
     padding: 15px;
   }
 
-  .LoginContainer {
+  .SignupContainer {
     max-width: 100%;
   }
 
-  .LoginBlock {
+  .SignupBlock {
     min-height: initial;
   }
 
-  .LoginHeader {
+  .SignupHeader {
     padding: 30px 20px 20px;
   }
 
@@ -275,20 +206,16 @@
     font-size: 1.8rem;
   }
 
-  .LoginForm {
+  .SignupForm {
     padding: 20px;
   }
 
-  .LoginInputs {
-    gap: 16px;
+  .SignupInputs {
+    gap: 14px;
     margin-bottom: 20px;
   }
 
-  .LoginFooter {
+  .SignupFooter {
     padding: 16px 20px;
-  }
-
-  .QuickLoginGrid {
-    grid-template-columns: 1fr;
   }
 }
