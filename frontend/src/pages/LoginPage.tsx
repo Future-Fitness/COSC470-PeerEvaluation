@@ -117,14 +117,7 @@ export default function LoginPage() {
                   className="flex items-center justify-between w-full cursor-pointer hover:text-blue-600 transition-colors"
                 >
                   <span className="QuickLoginTitle">Quick Login (Test Accounts)</span>
-                  <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${showQuickLogin ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                
                 </button>
               </div>
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showQuickLogin ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
