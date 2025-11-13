@@ -1,18 +1,38 @@
 .Home {
-  margin: 1rem;
+  padding: 2rem 2.5rem;
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .Home h1 {
-  border-bottom: 1px solid var(--background-secondary);
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .Classes {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
 
-  gap: 1rem;
+@media (max-width: 768px) {
+  .Classes {
+    grid-template-columns: 1fr;
+  }
+
+  .Home {
+    padding: 1.5rem;
+  }
+
+  .Home h1 {
+    font-size: 1.75rem;
+  }
 }
 
 .ClassCreateButton {
@@ -21,19 +41,37 @@
   align-items: center;
   justify-content: center;
 
-  width: 360px;
-  height: 240px;
+  min-height: 240px;
 
-  background: var(--background-secondary);
+  background: var(--card-background);
   color: var(--text-secondary);
 
-  border-radius: 6px;
-  border: 1px dashed var(--text-secondary);
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
 
-  transition: all 0.1s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.ClassCreateButton h2 {
+  color: var(--accent-blue);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  transition: all 0.2s ease-in-out;
 }
 
 .ClassCreateButton:hover {
-  filter: brightness(0.8);
-  cursor: pointer;
+  border-color: var(--accent-blue);
+  background: rgba(66, 153, 225, 0.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.ClassCreateButton:hover h2 {
+  color: var(--accent-blue);
+}
+
+.ClassCreateButton:active {
+  transform: translateY(0);
 }

@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
     "test": "DANGEROUS_DISABLE_ALL_AUTH=true jest",
     "test:unit": "DANGEROUS_DISABLE_ALL_AUTH=true jest --testPathIgnorePatterns=integration --verbose",
     "test:unit:coverage": "DANGEROUS_DISABLE_ALL_AUTH=true COLLECT_COVERAGE=true jest --testPathIgnorePatterns=integration --coverage",

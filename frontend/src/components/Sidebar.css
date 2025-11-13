@@ -1,8 +1,10 @@
 .Sidebar {
-  width: 200px;
-  min-width: 200px;
+  width: 240px;
+  min-width: 240px;
   height: 100vh;
-  background-color: var(--background-secondary);
+  background-color: #ffffff;
+  border-right: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 
   display: flex;
   flex-direction: column;
@@ -14,8 +16,10 @@
 
   display: flex;
   justify-content: center;
+  align-items: center;
 
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .SidebarLogo img {
@@ -26,33 +30,50 @@
 .SidebarTop {
   display: flex;
   flex-direction: column;
-  
+
   width: 100%;
   height: 100%;
+  padding: 0.5rem 0;
 }
 
 .SidebarBottom {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  
+
   width: 100%;
   height: 100%;
+  padding: 0.5rem 0;
 }
 
 .SidebarRow {
   display: flex;
   flex-direction: column;
+  margin: 0.25rem 0.75rem;
+  border-radius: 8px;
+  transition: all 0.15s ease-in-out;
+}
 
-  padding: 0.25rem 0;
+.SidebarRow:hover {
+  background-color: var(--background-secondary);
 }
 
 .SidebarRow a {
   text-decoration: none;
   color: var(--text-primary);
   text-align: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.15s ease-in-out;
 }
 
 .SidebarRow.selected {
-  background-color: var(--background-tertiary);
+  background-color: rgba(66, 153, 225, 0.1);
+}
+
+.SidebarRow.selected a {
+  color: var(--accent-blue);
+  font-weight: 600;
 }

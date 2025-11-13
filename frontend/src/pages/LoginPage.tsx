@@ -33,41 +33,49 @@ export default function LoginPage() {
 
   return (
     <div className="LoginPage">
-      <div className="LoginBlock">
-        <h1>Login</h1>
-
-        <div className="LoginInner">
-          <div className="LoginInputs">
-            <div className="LoginInputChunk">
-              <span>Username</span>
-              <Textbox
-                placeholder='Username...'
-                onInput={setUsername}
-                className='LoginInput'
-              />
-            </div>
-
-            <div className="LoginInputChunk">
-              <span>Password</span>
-              <Textbox
-                type='password'
-                placeholder='Password...'
-                onInput={setPassword}
-                className='LoginInput'
-                onKeyPress={handleKeyPress}
-              />
-            </div>
+      <div className="LoginContainer">
+        <div className="LoginBlock">
+          <div className="LoginHeader">
+            <h1 className="AppTitle">Peer Evaluation</h1>
+            <p className="AppSubtitle">Collaborative Peer Review Platform</p>
           </div>
 
+          <div className="LoginForm">
+            <div className="LoginInputs">
+              <div className="LoginInputChunk">
+                <label htmlFor="username">Username</label>
+                <Textbox
+                  placeholder='Enter your username...'
+                  onInput={setUsername}
+                  className='LoginInput'
+                />
+              </div>
+
+              <div className="LoginInputChunk">
+                <label htmlFor="password">Password</label>
+                <Textbox
+                  type='password'
+                  placeholder='Enter your password...'
+                  onInput={setPassword}
+                  className='LoginInput'
+                  onKeyPress={handleKeyPress}
+                />
+              </div>
+            </div>
+
+            {error && <div className="ErrorMessage">{error}</div>}
+
+            <Button
+              onClick={()=> attemptLogin()}
+              className="LoginButton"
+              children="Sign In"
+            />
+          </div>
+
+          <div className="LoginFooter">
+            <p className="Credits">Made by Harsh, Parag, Guntash, Allen & Kartik</p>
+          </div>
         </div>
-
-        {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-
-        <Button
-          onClick={()=> attemptLogin()}
-          children="Login"
-        />
-
       </div>
     </div>
   );
