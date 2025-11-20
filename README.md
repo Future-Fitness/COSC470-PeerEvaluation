@@ -21,11 +21,35 @@ A collaborative peer review platform for educational settings, allowing teachers
 
 ## Getting Started
 
-### Using Docker
+### 1. Configuration
+
+**Important:** Set up your environment variables before running the application.
+
+```bash
+# Copy the example environment file
+cp backend/.env.example backend/.env
+
+# Edit backend/.env with your actual credentials:
+# - Aiven MySQL database credentials
+# - Cloudinary API credentials (for file storage)
+# - Backend server port (default: 5008)
+```
+
+**Required credentials:**
+- **Aiven MySQL**: Sign up at [aiven.io](https://aiven.io) for a free hosted MySQL instance
+- **Cloudinary**: Sign up at [cloudinary.com](https://cloudinary.com) for file storage (free tier available)
+
+See `backend/.env.example` for all required variables.
+
+### 2. Using Docker
 
 ```bash
 # Clone this repository
 git clone <repository-url>
+
+# Configure environment (see step 1 above)
+cp backend/.env.example backend/.env
+# Edit backend/.env with your credentials
 
 # Start all services
 docker-compose up --build
@@ -34,9 +58,11 @@ docker-compose up --build
 # Backend API: http://localhost:5008
 ```
 
-### Manual Development Setup
+### 3. Manual Development Setup
 
 ```bash
+# Configure environment first (see step 1 above)
+
 # Backend
 cd backend
 pnpm install
@@ -47,6 +73,18 @@ cd frontend
 pnpm install
 pnpm dev
 ```
+
+### 4. Database Setup
+
+```bash
+# Reset and populate database with test data
+cd backend
+node reset-db.js
+```
+
+This creates test accounts:
+- Student: `test@test.com` / `1234`
+- Teacher: `test2@test.com` / `1234`
 
 ## Architecture Overview
 

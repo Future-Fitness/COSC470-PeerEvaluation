@@ -271,21 +271,29 @@ export default function Group() {
             <div className="flex gap-3 mb-4">
               <button
                 className="px-4 py-2 bg-green-500 dark:bg-green-600 text-white rounded font-medium hover:brightness-110 transition-all"
-                onClick={() => {
-                  const groupMems = Object.values(groupTable);
-                  const uaMems = Object.values(memberTable);
-                  for (const group of groupMems) {
-                    for (const mem of group) {
-                      saveGroups(mem.groupID, mem.userID, mem.assignmentID);
+                onClick={async () => {
+                  try {
+                    const groupMems = Object.values(groupTable);
+                    const uaMems = Object.values(memberTable);
+                    
+                    const promises = [];
+                    for (const group of groupMems) {
+                      for (const mem of group) {
+                        promises.push(saveGroups(mem.groupID, mem.userID, mem.assignmentID));
+                      }
                     }
-                  }
-                  for (const group of uaMems) {
-                    for (const mem of group) {
-                      saveGroups(mem.groupID, mem.userID, mem.assignmentID);
+                    for (const group of uaMems) {
+                      for (const mem of group) {
+                        promises.push(saveGroups(mem.groupID, mem.userID, mem.assignmentID));
+                      }
                     }
+                    
+                    await Promise.all(promises);
+                    alert("Changes saved successfully!");
+                  } catch (error) {
+                    console.error("Error saving changes:", error);
+                    alert("Error saving changes");
                   }
-
-                  alert("Changes saved!");
                 }}
               >
                 Confirm Changes
@@ -300,13 +308,25 @@ export default function Group() {
 
               <button
                 className="px-4 py-2 bg-red-500 dark:bg-red-600 text-white rounded font-medium hover:brightness-110 transition-all"
-                onClick={() => {
-                  if (selectedGroup == -1) return;
-                  const localGroup = { ...groupTable }
-                  delete localGroup[selectedGroup];
-                  setGroupTable(localGroup);
-                  deleteGroup(selectedGroup);
-                  alert("Group deleted!");
+                onClick={async () => {
+                  if (selectedGroup == -1) {
+                    alert("Please select a group to delete");
+                    return;
+                  }
+                  if (!confirm("Are you sure you want to delete this group?")) {
+                    return;
+                  }
+                  try {
+                    await deleteGroup(selectedGroup);
+                    const localGroup = { ...groupTable }
+                    delete localGroup[selectedGroup];
+                    setGroupTable(localGroup);
+                    setSelectedGroup(-1);
+                    alert("Group deleted successfully!");
+                  } catch (error) {
+                    console.error("Error deleting group:", error);
+                    alert("Error deleting group");
+                  }
                 }}
               >
                 Delete Selected Group
@@ -316,9 +336,22 @@ export default function Group() {
             <div className="flex items-center gap-3">
               <button
                 className="px-4 py-2 bg-primary-500 dark:bg-primary-600 text-white rounded font-medium hover:brightness-110 transition-all"
-                onClick={() => {
-                  const nextGid = Number(getNextGroupID) + 1;
-                  createGroup(Number(id), groupName, Number(nextGid))
+                onClick={async () => {
+                  if (!groupName.trim()) {
+                    alert("Please enter a group name");
+                    return;
+                  }
+                  try {
+                    const nextGidResp = await getNextGroupID(Number(id));
+                    const nextGid = nextGidResp.nextGroupID;
+                    await createGroup(Number(id), groupName, nextGid);
+                    alert("Group created successfully!");
+                    // Refresh the page to show the new group
+                    window.location.reload();
+                  } catch (error) {
+                    console.error("Error creating group:", error);
+                    alert("Failed to create group");
+                  }
                 }}
               >
                 Create New Group

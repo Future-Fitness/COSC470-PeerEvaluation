@@ -8,7 +8,8 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ClassHome from "./pages/ClassHome";
 import ClassMembers from "./pages/ClassMembers";
-import Assignment from "./pages/Assignment";
+import AssignmentRubric from "./pages/AssignmentRubric"; // Renamed import
+import AssignmentDetail from "./pages/AssignmentDetail"; // New import
 import Group from "./pages/Group";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
@@ -36,7 +37,8 @@ function AppContent() {
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/classes/:id/home" element={<ClassHome />} />
             <Route path="/classes/:id/members" element={<ClassMembers />} />
-            <Route path="/assignments/:id" element={<Assignment />} />
+            <Route path="/assignments/:id" element={<AssignmentDetail />} /> {/* Updated route */}
+            <Route path="/assignments/:id/rubric" element={<AssignmentRubric />} /> {/* New route */}
             <Route path="/assignments/:id/group" element={<Group />} />
           </Route>
         </Routes>

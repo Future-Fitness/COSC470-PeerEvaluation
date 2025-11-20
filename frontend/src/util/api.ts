@@ -9,6 +9,32 @@ export interface UserProfile {
   isTeacher: boolean;
 }
 
+export interface Class {
+  id: number;
+  name: string;
+  teacherID: number;
+}
+
+export interface Assignment {
+  id: number;
+  courseID: number;
+  name: string;
+  rubric?: any; // Rubric details can be more specific later if needed
+}
+
+export interface Submission {
+  id: number;
+  assignmentID: number;
+  userID: number;
+  fileURL: string;
+  submittedAt: string; // ISO date string
+}
+
+export interface SubmissionsWithUser extends Submission {
+  username: string;
+  email: string;
+}
+
 // Get current user's profile
 export const getMyProfile = async (): Promise<UserProfile> => {
   const resp = await fetch(`${BASE_URL}/profile`, {
@@ -85,7 +111,7 @@ export const tryLogin = async (username: string, password: string) => {
   }
 }
 
-export const createClass = async (name: string) => {
+export const createClass = async (name: string): Promise<Class> => {
   const response = await fetch(`${BASE_URL}/create_class`, {
     method: 'POST',
     body: JSON.stringify({
@@ -102,11 +128,10 @@ export const createClass = async (name: string) => {
   if (!response.ok) {
     throw new Error(`Response status: ${response.status}`);
   }
-  return response
+  return await response.json()
 }
 
-export const listClasses = async () => {
-  // TODO get session info and whatnot
+export const getClasses = async (): Promise<Class[]> => {
   const resp = await fetch(`${BASE_URL}/classes`, {
     method: 'GET',
     headers: {
@@ -143,8 +168,8 @@ export const importStudentsForCourse = async (courseID: number, students: string
   }
 }
 
-export const listAssignments = async (classId: string) => {
-  const resp = await fetch(`${BASE_URL}/assignments/`+classId, {
+export const getAssignments = async (courseId: number): Promise<Assignment[]> => {
+  const resp = await fetch(`${BASE_URL}/assignments/${courseId}`, {
     method: 'GET',
     headers: {
        'Authorization': `Bearer ${getToken()}`,
@@ -309,7 +334,7 @@ export const getUserId = async () => {
 } 
 
 export const saveGroups = async (groupID: number, userID: number, assignmentID : number) =>{
-  await fetch(`${BASE_URL}/save_groups`, {
+  const response = await fetch(`${BASE_URL}/save_groups`, {
     method: 'POST',
     body: JSON.stringify({
       groupID,
@@ -321,6 +346,12 @@ export const saveGroups = async (groupID: number, userID: number, assignmentID :
       'Content-Type': 'application/json',
    },
   })
+
+  maybeHandleExpire(response);
+
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
 }
 
 export const getCriteria = async (rubricID: number) => {
@@ -418,7 +449,7 @@ export const createAssignment = async (courseID: number, name: string)=> {
 }
 
 export const deleteGroup = async (groupID: number) => {
-  await fetch(`${BASE_URL}/delete_group`, {
+  const response = await fetch(`${BASE_URL}/delete_group`, {
     method: 'POST',
     body: JSON.stringify({
       groupID,
@@ -428,6 +459,12 @@ export const deleteGroup = async (groupID: number) => {
       'Content-Type': 'application/json',
    },
   })
+
+  maybeHandleExpire(response);
+
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
 }
 
 export const createReview = async (assignmentID: number, reviewerID: number, revieweeID: number) => {
@@ -527,4 +564,154 @@ export const createGroup = async(assignmentID: number, name: string, id: number)
   }
 
   return await response.json();
+}
+
+export const uploadSubmission = async (assignmentID: number, file: File): Promise<any> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('assignmentID', assignmentID.toString());
+
+  const response = await fetch(`${BASE_URL}/upload_submission`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Authorization': `Bearer ${getToken()}`
+      // Do NOT set 'Content-Type': 'multipart/form-data' here; browser handles it automatically with FormData
+    },
+  });
+
+  maybeHandleExpire(response);
+
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+export const getMySubmission = async (assignmentID: number): Promise<Submission | null> => {
+  const resp = await fetch(`${BASE_URL}/my_submission/${assignmentID}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  maybeHandleExpire(resp);
+
+  if (resp.status === 404) {
+    return null; // No submission found
+  }
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+export const getAssignmentById = async (assignmentID: number): Promise<Assignment> => {
+  const resp = await fetch(`${BASE_URL}/assignments/${assignmentID}/details`, { // Assuming a dedicated endpoint for single assignment details
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+// Student management APIs
+export interface Student {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export const getAllStudents = async (): Promise<Student[]> => {
+  const resp = await fetch(`${BASE_URL}/students`, {
+    headers: { 'Authorization': `Bearer ${getToken()}` }
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+export const getAvailableStudents = async (courseId: string): Promise<Student[]> => {
+  const resp = await fetch(`${BASE_URL}/students/available/${courseId}`, {
+    headers: { 'Authorization': `Bearer ${getToken()}` }
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+export const getEnrolledStudents = async (courseId: string): Promise<Student[]> => {
+  const resp = await fetch(`${BASE_URL}/students/enrolled/${courseId}`, {
+    headers: { 'Authorization': `Bearer ${getToken()}` }
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+export const addStudentsToClass = async (courseId: number, studentIds: number[]) => {
+  const resp = await fetch(`${BASE_URL}/add_students_to_class`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ courseId, studentIds })
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+export const removeStudentsFromClass = async (courseId: number, studentIds: number[]) => {
+  const resp = await fetch(`${BASE_URL}/remove_students_from_class`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ courseId, studentIds })
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
 }

@@ -16,8 +16,11 @@ export default function (app: FastifyInstance) {
         return;
       }
 
-      // Get form fields
-      const assignmentID = data.fields.assignmentID?.value;
+      // Get form fields - in @fastify/multipart v9, fields are accessed directly
+      const assignmentIDField = data.fields.assignmentID;
+      const assignmentID = typeof assignmentIDField === 'object' && 'value' in assignmentIDField
+        ? assignmentIDField.value
+        : assignmentIDField;
 
       if (!assignmentID) {
         resp.status(400).send({ error: 'Assignment ID is required' });

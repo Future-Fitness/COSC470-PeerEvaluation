@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function Button(props: Props) {
-  const baseClasses = 'appearance-none border-none rounded p-3 font-bold text-base transition-all duration-150';
+  const baseClasses = 'appearance-none border-none rounded p-3 font-bold text-base transition-all duration-150 flex items-center justify-center gap-2';
 
   const typeClasses = props.type === 'secondary'
     ? 'bg-slate-500 dark:bg-slate-600 text-white'
