@@ -3,6 +3,7 @@ interface Props {
   children?: React.ReactNode
   type?: 'regular' | 'secondary'
   disabled?: boolean
+  className?: string
 }
 
 export default function Button(props: Props) {
@@ -20,7 +21,7 @@ export default function Button(props: Props) {
 
   return (
     <button
-      className={`${baseClasses} ${stateClasses}`}
+      className={`${baseClasses} ${stateClasses} ${props.className || ''}`}
       onClick={props.onClick}
       disabled={props.disabled}
     >

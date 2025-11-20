@@ -5,6 +5,7 @@ interface Props {
   type?: string
   onKeyPress?: (e: React.KeyboardEvent) => void
   value?: string
+  disabled?: boolean
 }
 
 export default function Textbox(props: Props) {
@@ -23,6 +24,7 @@ export default function Textbox(props: Props) {
         props.onInput(e.target.value)
       }}
       onKeyPress={props.onKeyPress}
+      disabled={props.disabled}
     />
   )
 }

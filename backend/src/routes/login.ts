@@ -45,7 +45,7 @@ export default function (app: FastifyInstance) {
         // Split only on the first colon (password may contain colons)
         user = decoded.substring(0, colonIndex);
         pass = decoded.substring(colonIndex + 1);
-      } catch (_error) {
+      } catch {
         resp.status(401).send('Unauthorized - invalid base64 encoding');
         return;
       }

@@ -7,6 +7,7 @@ interface Props {
   onKeyPress?: (e: React.KeyboardEvent) => void;
   value?: string;
   rows?: number; // Optional prop for textarea rows
+  disabled?: boolean;
 }
 
 export default function Textarea(props: Props) {
@@ -25,6 +26,7 @@ export default function Textarea(props: Props) {
         props.onInput(e.target.value);
       }}
       onKeyPress={props.onKeyPress}
+      disabled={props.disabled}
     />
   );
 }

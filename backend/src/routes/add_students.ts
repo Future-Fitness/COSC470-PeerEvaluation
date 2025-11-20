@@ -52,7 +52,7 @@ export default function (app: FastifyInstance) {
       const alreadyEnrolled = [];
 
       for (const studentId of studentIds) {
-        const [_enrollment, created] = await User_Course.findOrCreate({
+        const [, created] = await User_Course.findOrCreate({
           where: {
             userID: studentId,
             courseID: courseId,
