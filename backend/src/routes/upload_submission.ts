@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { pipeline } from 'stream/promises';
 import cloudinary from '../util/cloudinary';
 import models from '../util/database';
 
@@ -14,7 +13,7 @@ export default function (app: FastifyInstance) {
       // Get the multipart data
       const parts = await req.parts();
       
-      let file: any = null;
+      let file: Awaited<ReturnType<typeof parts.next>>['value'] | null = null;
       let assignmentID: string | undefined;
       
       // Process all parts
@@ -62,7 +61,7 @@ export default function (app: FastifyInstance) {
       const studentID = session.id;
 
       // Create a promise to upload to Cloudinary
-      const uploadPromise = new Promise<any>((resolve, reject) => {
+      const uploadPromise = new Promise<{secure_url: string; public_id: string; format: string; resource_type: string}>((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
             folder: `submissions/${assignmentID}`,
