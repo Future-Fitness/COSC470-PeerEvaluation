@@ -1,4 +1,5 @@
 import { importStudentsForCourse } from "./api";
+import { showSuccess, showError } from './toast';
 
   export const importCSV = (id: string | number) => {
     // Prompt the user to select a file
@@ -20,23 +21,23 @@ import { importStudentsForCourse } from "./api";
         const text = reader.result?.toString();
 
         if (!text) {
-          alert("The selected file is empty or could not be read");
+          showError("The selected file is empty or could not be read");
           return;
         }
 
         try {
           await importStudentsForCourse(Number(id), text);
-          alert("Students imported successfully!");
+          showSuccess("Students imported successfully!");
           // Refresh the page to show new students
           window.location.reload();
         } catch (error) {
           console.error("Error importing students:", error);
-          alert("Error importing students: " + (error instanceof Error ? error.message : "Unknown error"));
+          showError("Error importing students: " + (error instanceof Error ? error.message : "Unknown error"));
         }
       };
 
       reader.onerror = () => {
-        alert("Error reading file");
+        showError("Error reading file");
       };
 
       reader.readAsText(file);

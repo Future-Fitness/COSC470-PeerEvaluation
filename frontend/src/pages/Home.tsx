@@ -8,6 +8,7 @@ import Button from '../components/Button'; // Import Button component
 
 import { getClasses, getMyProfile, Class, UserProfile, createClass } from "../util/api"; // Updated imports
 import { isTeacher } from "../util/login"; // isTeacher is still used for localStorage check for initial render
+import { showSuccess, showError } from '../util/toast';
 
 export default function Home() {
   const [courses, setCourses] = useState<Class[]>([]); // Updated state type
@@ -42,19 +43,19 @@ export default function Home() {
 
   const handleCreateClass = async () => {
     if (!newClassName.trim()) {
-      alert('Class name cannot be empty.');
+      showError('Class name cannot be empty.');
       return;
     }
     setIsCreatingClass(true);
     try {
       await createClass(newClassName);
-      alert('Class created successfully!');
+      showSuccess('Class created successfully!');
       setNewClassName('');
       setIsCreateClassModalOpen(false);
       fetchClassesAndProfile(); // Refresh the list of classes
     } catch (err) {
       console.error('Error creating class:', err);
-      alert('Failed to create class. Please try again.');
+      showError('Failed to create class. Please try again.');
     } finally {
       setIsCreatingClass(false);
     }

@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import TabNavigation from "../components/TabNavigation";
 import { isTeacher } from "../util/login";
 import Textbox from "../components/Textbox";
+import { showSuccess, showError } from "../util/toast";
 
 function fisherYates<T>(array: T[]): T[] {
   let m = array.length, t, i;
@@ -289,10 +290,10 @@ export default function Group() {
                     }
                     
                     await Promise.all(promises);
-                    alert("Changes saved successfully!");
+                    showSuccess("Changes saved successfully!");
                   } catch (error) {
                     console.error("Error saving changes:", error);
-                    alert("Error saving changes");
+                    showError("Error saving changes");
                   }
                 }}
               >
@@ -310,7 +311,7 @@ export default function Group() {
                 className="px-4 py-2 bg-red-500 dark:bg-red-600 text-white rounded font-medium hover:brightness-110 transition-all"
                 onClick={async () => {
                   if (selectedGroup == -1) {
-                    alert("Please select a group to delete");
+                    showError("Please select a group to delete");
                     return;
                   }
                   if (!confirm("Are you sure you want to delete this group?")) {
@@ -322,10 +323,10 @@ export default function Group() {
                     delete localGroup[selectedGroup];
                     setGroupTable(localGroup);
                     setSelectedGroup(-1);
-                    alert("Group deleted successfully!");
+                    showSuccess("Group deleted successfully!");
                   } catch (error) {
                     console.error("Error deleting group:", error);
-                    alert("Error deleting group");
+                    showError("Error deleting group");
                   }
                 }}
               >
@@ -338,19 +339,19 @@ export default function Group() {
                 className="px-4 py-2 bg-primary-500 dark:bg-primary-600 text-white rounded font-medium hover:brightness-110 transition-all"
                 onClick={async () => {
                   if (!groupName.trim()) {
-                    alert("Please enter a group name");
+                    showError("Please enter a group name");
                     return;
                   }
                   try {
                     const nextGidResp = await getNextGroupID(Number(id));
                     const nextGid = nextGidResp.nextGroupID;
                     await createGroup(Number(id), groupName, nextGid);
-                    alert("Group created successfully!");
+                    showSuccess("Group created successfully!");
                     // Refresh the page to show the new group
                     window.location.reload();
                   } catch (error) {
                     console.error("Error creating group:", error);
-                    alert("Failed to create group");
+                    showError("Failed to create group");
                   }
                 }}
               >

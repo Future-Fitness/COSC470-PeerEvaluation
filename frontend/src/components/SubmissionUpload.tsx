@@ -4,6 +4,7 @@ import Button from './Button';
 import Loader from './Loader';
 import { uploadSubmission, getMySubmission, Submission } from '../util/api';
 import { formatBytes } from '../util/formatters';
+import { showSuccess, showError } from '../util/toast';
 
 interface SubmissionUploadProps {
   assignmentId: number;
@@ -45,7 +46,7 @@ const SubmissionUpload: React.FC<SubmissionUploadProps> = ({ assignmentId }) => 
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setError('Please select a file to upload.');
+      showError('Please select a file to upload.');
       return;
     }
 
@@ -55,12 +56,14 @@ const SubmissionUpload: React.FC<SubmissionUploadProps> = ({ assignmentId }) => 
 
     try {
       const response = await uploadSubmission(assignmentId, selectedFile);
-      setSuccessMessage('File uploaded successfully!');
+      showSuccess('File uploaded successfully!');
       setSelectedFile(null); // Clear selected file after upload
       fetchMySubmission(); // Refresh existing submission status
     } catch (err: any) {
       console.error('Error uploading file:', err);
-      setError(err.message || 'Failed to upload file.');
+      const errorMsg = err.message || 'Failed to upload file.';
+      setError(errorMsg);
+      showError(errorMsg);
     } finally {
       setUploading(false);
     }

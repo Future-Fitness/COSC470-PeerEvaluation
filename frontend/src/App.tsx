@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Sidebar from "./components/Sidebar";
+import Toast from "./components/Toast";
 
 import Profile from "./pages/Profile";
 import CreateClass from "./pages/CreateClass";
@@ -51,6 +52,7 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
+        <Toast />
         <AppContent />
       </ThemeProvider>
     </BrowserRouter>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Button from '../components/Button'
 import Textbox from '../components/Textbox'
 import { createClass } from '../util/api'
+import { showSuccess, showError } from '../util/toast'
 
 export default function CreateClass() {
   const [name, setName] = useState('')
@@ -9,7 +10,7 @@ export default function CreateClass() {
   const attemptCreateClass = async () => {
     try {
       if (!name) {
-        alert('Please enter a class name.');
+        showError('Please enter a class name.');
         return;
       }
       const response = await createClass(name);
@@ -18,10 +19,10 @@ export default function CreateClass() {
         throw new Error('Failed to create class');
       }
 
-      alert('Class created successfully!');//stay on page - as per Ruth.
+      showSuccess('Class created successfully!');//stay on page - as per Ruth.
     } catch (error) {
       console.error('Error creating class:', error);
-      alert('Error creating class.');
+      showError('Error creating class.');
     }
   };
 

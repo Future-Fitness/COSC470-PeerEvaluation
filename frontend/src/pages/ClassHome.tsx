@@ -11,6 +11,7 @@ import Modal from "../components/Modal"; // Import Modal component
 import { isTeacher } from "../util/login";
 import { Home, Users, Library, FileUp, Plus } from 'lucide-react'; // Import Lucide React icons and Plus icon
 import Loader from '../components/Loader'; // Import Loader component
+import { showSuccess, showError } from '../util/toast';
 
 export default function ClassHome() {
   const { id } = useParams();
@@ -56,7 +57,7 @@ export default function ClassHome() {
 
   const tryCreateAssignment = async () => { // Renamed from tryCreateAssingment
     if (!newAssignmentName.trim()) {
-      alert("Assignment name cannot be empty.");
+      showError("Assignment name cannot be empty.");
       return;
     }
     setIsCreatingAssignment(true);
@@ -69,14 +70,14 @@ export default function ClassHome() {
         throw new Error('Failed to create assignment');
       }
 
-      alert('Assignment created successfully!');
+      showSuccess('Assignment created successfully!');
       setNewAssignmentName(''); // Clear input
       setNewAssignmentDescription(''); // Clear description
       setIsCreateAssignmentModalOpen(false); // Close modal
       fetchAssignments(); // Refresh the list of assignments
     } catch (error) {
       console.error('Error creating assignment:', error);
-      alert('Error creating assignment.');
+      showError('Error creating assignment.');
     } finally {
       setIsCreatingAssignment(false);
     }
