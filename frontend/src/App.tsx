@@ -11,15 +11,21 @@ import ClassMembers from "./pages/ClassMembers";
 import Assignment from "./pages/Assignment";
 import Group from "./pages/Group";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
 function AppContent() {
   const location = useLocation();
+  const { isSidebarCollapsed } = useTheme();
   const showSidebar = location.pathname !== '/' && location.pathname !== '/signup';
 
   return (
-    <div className="flex flex-row min-h-screen bg-gray-50">
+    <div className="flex flex-row min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {showSidebar && <Sidebar />}
-      <div className="flex flex-col flex-1 w-full overflow-y-auto">
+      <div
+        className={`flex flex-col flex-1 w-full overflow-y-auto transition-all duration-300 ${
+          showSidebar ? (isSidebarCollapsed ? 'ml-16' : 'ml-60') : ''
+        }`}
+      >
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
@@ -41,7 +47,9 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

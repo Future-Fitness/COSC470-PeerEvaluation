@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from '../components/Button'
 import Textbox from '../components/Textbox'
-import './CreateClass.css'
 import { createClass } from '../util/api'
 
 export default function CreateClass() {
@@ -9,6 +8,10 @@ export default function CreateClass() {
 
   const attemptCreateClass = async () => {
     try {
+      if (!name) {
+        alert('Please enter a class name.');
+        return;
+      }
       const response = await createClass(name);
       
       if (!response.ok) {
@@ -23,18 +26,20 @@ export default function CreateClass() {
   };
 
   return (
-    <div className="CreateClass">
-      <h1>Create Class</h1>
+    <div className="p-16 w-3/5">
+      <h1 className="text-3xl font-bold mb-5 text-gray-900 dark:text-gray-100">Create Class</h1>
 
-      <h2>Class Name</h2>
-      <Textbox onInput={setName} />
-      
-      <Button onClick={() => {
-        // Send API req
-        attemptCreateClass()
-      }}>
-        Submit
-      </Button>
+      <h2 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Class Name</h2>
+      <Textbox onInput={setName} placeholder="Enter class name" />
+
+      <div className="mt-4">
+        <Button onClick={() => {
+          // Send API req
+          attemptCreateClass()
+        }}>
+          Submit
+        </Button>
+      </div>
     </div>
   )
 }

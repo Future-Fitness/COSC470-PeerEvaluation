@@ -1,32 +1,23 @@
-// import { useParams } from 'react-router-dom'
-import './Profile.css'
-// import { useEffect, useState } from 'react'
-// import { getProfile } from '../util/api'
-
 export default function Profile() {
-  // const { id } = useParams()
-
-  // const [profile, setProfile] = useState({})
-
-  // useEffect(() => {
-  //   const f = async () => {
-  //     setProfile(await getProfile(id))
-  //   }
-
-  //   f()
-  // }, [])
-
   return (
-    <div className="Profile">
-      <div className="profile-image">
-        <img src={`https://placehold.co/200x200`} alt="profile" />
+    <div className="flex flex-col md:flex-row items-center md:items-start gap-8 p-8">
+      <div className="flex-shrink-0">
+        <img
+          src={`https://placehold.co/200x200`}
+          alt="profile"
+          className="w-48 h-48 rounded-full object-cover border-4 border-gray-200 dark:border-gray-700 shadow-lg"
+        />
       </div>
 
-      <div className="profile-info">
-        <h1>Full Name</h1>
-        <span>Place Holder</span>
-        <h1>Email</h1>
-        <span>placeholder@email.com</span>
+      <div className="flex flex-col gap-4">
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Full Name</h2>
+          <span className="text-xl font-medium text-gray-900 dark:text-gray-100">Place Holder</span>
+        </div>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Email</h2>
+          <span className="text-xl font-medium text-gray-900 dark:text-gray-100">placeholder@email.com</span>
+        </div>
       </div>
     </div>
   )

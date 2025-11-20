@@ -1,18 +1,22 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
-import "./Assignment.css";
 import RubricCreator from "../components/RubricCreator";
 import RubricDisplay from "../components/RubricDisplay";
 import TabNavigation from "../components/TabNavigation";
 import { isTeacher } from "../util/login";
 
-import { 
+import {
   listStuGroup,
   getUserId,
   createReview,
   createCriterion,
   getReview
 } from "../util/api";
+
+interface StudentGroups {
+  userID: number;
+  username: string;
+}
 
 interface SelectedCriterion {
   row: number;
@@ -34,6 +38,7 @@ export default function Assignment() {
       const stus = await listStuGroup(Number(id), stuID);
       setStuGroup(stus);
         try {
+          if (revieweeID === 0) return;
           const reviewResponse = await getReview(Number(id), stuID, revieweeID);
           const reviewData = await reviewResponse.json();
           setReview(reviewData.grades);
@@ -45,22 +50,17 @@ export default function Assignment() {
   }, [revieweeID, id, stuID]);
 
   const handleCriterionSelect = (row: number, column: number) => {
-    // Check if this criterion is already selected
     const existingIndex = selectedCriteria.findIndex(
       criterion => criterion.row === row && criterion.column === column
     );
-    
+
     if (existingIndex >= 0) {
-      // If already selected, remove it (toggle off)
-      setSelectedCriteria(prev => 
+      setSelectedCriteria(prev =>
         prev.filter((_, index) => index !== existingIndex)
       );
     } else {
-      // Add the new criterion, removing any other selection in the same row
       setSelectedCriteria(prev => {
-        // Remove any existing selection for this row
         const filteredCriteria = prev.filter(criterion => criterion.row !== row);
-        // Add the new selection
         return [...filteredCriteria, { row, column }];
       });
     }
@@ -74,8 +74,8 @@ export default function Assignment() {
 
   return (
     <>
-      <div className="AssignmentHeader">
-        <h2>Assignment {id}</h2>
+      <div className="flex flex-row justify-between items-center p-3">
+        <h2 className="text-2xl font-bold">Assignment {id}</h2>
       </div>
 
       <TabNavigation
@@ -91,41 +91,44 @@ export default function Assignment() {
         ]}
       />
 
-      <div className='assignmentRubricDisplay'>
+      <div className='my-5 mx-3'>
         <RubricDisplay rubricId={Number(id)} onCriterionSelect={handleCriterionSelect} grades={review} />
       </div>
       {
-        isTeacher() && 
-          <div className='assignmentRubric'>
+        isTeacher() &&
+          <div className='my-5 mx-3'>
             <RubricCreator id={Number(id)}/>
           </div>
       }
 
 {
-      //List group members as radio buttons to select for given review
-      !isTeacher() && <div className='groupMembers'>
-        <h3>Select a group member to review</h3>
+      !isTeacher() && <div className='my-5 mx-3 p-5 bg-white rounded-lg shadow-md'>
+        <h3 className="text-xl font-bold mb-3">Select a group member to review</h3>
           {stuGroup.map((stus) => {
                 return (
-                  <>
-                  <input type='radio' id={stus.userID.toString()} value={stus.userID} name='groupMembers' onChange={handleRadioChange}></input>
-                  <label htmlFor={stus.userID.toString()}>{stus.userID}</label>
-                  <br></br>
-                  </>
+                  <div key={stus.userID} className="flex items-center gap-2 my-2">
+                    <input type='radio' id={stus.userID.toString()} value={stus.userID} name='groupMembers' onChange={handleRadioChange} />
+                    <label htmlFor={stus.userID.toString()}>{stus.username}</label>
+                  </div>
                 )
               }
             )
           }
-          <button className='submitReview' onClick={async () => {
+          <button className='mt-4 bg-primary-500 text-white font-bold py-2 px-4 rounded hover:bg-primary-600' onClick={async () => {
             console.log("Submitting review with selected criteria:", selectedCriteria);
             try {
+              if (revieweeID === 0) {
+                alert("Please select a group member to review.");
+                return;
+              }
               const reviewResponse = await createReview(Number(id), stuID, revieweeID);
               const reviewData = await reviewResponse.json();
               console.log("Review response:", reviewData);
               for (const criterion of selectedCriteria) {
                 await createCriterion(reviewData.id, criterion.row, criterion.column, "");
               }
-              console.log('Review submitted successfully');
+              alert('Review submitted successfully');
+              window.location.reload();
             } catch (error) {
               console.error('Error submitting review:', error);
             }

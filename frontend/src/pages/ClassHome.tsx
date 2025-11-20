@@ -1,6 +1,5 @@
 import AssignmentCard from "../components/AssignmentCard";
 import Button from "../components/Button";
-import "./ClassHome.css";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { listAssignments, getClassName, createAssignment } from "../util/api";
@@ -8,6 +7,11 @@ import TabNavigation from "../components/TabNavigation";
 import { importCSV } from "../util/csv";
 import Textbox from "../components/Textbox";
 import { isTeacher } from "../util/login";
+
+interface Course {
+  id: number;
+  name: string;
+}
 
 export default function ClassHome() {
   const { id } = useParams();
@@ -23,10 +27,14 @@ export default function ClassHome() {
       setAssignments(resp);
       setClassName(classData.className);
     })();
-  }, []);
+  }, [id]);
     
     const tryCreateAssingment = async () => {
       try {
+        if (!newAssignmentName) {
+          alert("Please enter an assignment name.");
+          return;
+        }
         const response = await createAssignment(idNew, newAssignmentName);
         
         if (!response.id) {
@@ -34,19 +42,18 @@ export default function ClassHome() {
         }
 
         alert('Assignment created successfully!');
+        window.location.reload();
       } catch (error) {
         console.error('Error creating assignment:', error);
         alert('Error creating assignment.');
       }
-
-      window.location.reload();
     };
     
     return (
-      <>
-        <div className="ClassHeader">
-          <div className="ClassHeaderLeft">
-            <h2>{className}</h2>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="flex flex-row justify-between items-center p-3">
+          <div className="flex flex-row justify-between items-center p-3">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{className}</h2>
           </div>
 
         <div className="ClassHeaderRight">
@@ -71,12 +78,12 @@ export default function ClassHome() {
         ]}
       />
 
-      <div className="Class">
-        <div className="Assignments">
-          <ul className="Assignment">
+      <div className="block w-full h-full m-3">
+        <div className="flex flex-row p-3 items-start w-full">
+          <ul className="w-full list-none m-2 p-0">
             {assignments.map((assignment) => {
               return (
-                <li>
+                <li key={assignment.id}>
                   <AssignmentCard id={assignment.id}>
                     {assignment.name}
                   </AssignmentCard>
@@ -87,12 +94,12 @@ export default function ClassHome() {
         </div>
 
         {isTeacher() ? (
-          <div className="AssInputChunk">
-            <span>New Assignment Name:</span>
+          <div className="m-2 w-[30%] bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+            <span className="font-bold text-gray-900 dark:text-gray-100">New Assignment Name:</span>
             <Textbox
               placeholder="New Assignment..."
               onInput={setNewAssignmentName}
-              className="AssignmentInput"
+              className="flex flex-col items-center mb-3 w-full mt-2"
             />
             <Button
               onClick={() =>
@@ -104,6 +111,6 @@ export default function ClassHome() {
           </div>
         ) : null}
       </div>
-    </>
+    </div>
   );
 }

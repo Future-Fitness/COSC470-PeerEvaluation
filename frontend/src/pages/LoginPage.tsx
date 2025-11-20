@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
 import Textbox from '../components/Textbox';
 import Button from '../components/Button';
 import { tryLogin } from '../util/api';
@@ -63,76 +62,77 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="LoginPage">
-      <div className="LoginContainer">
-        <div className="LoginBlock">
-          <div className="LoginHeader">
-            <h1 className="AppTitle">Peer Evaluation</h1>
-            <p className="AppSubtitle">Collaborative Peer Review Platform</p>
+    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-blue-800 to-blue-500 p-5">
+      <div className="flex flex-col items-center justify-center w-full max-w-[450px]">
+        <div className="flex flex-col items-stretch justify-start w-full bg-white rounded-xl shadow-2xl overflow-hidden min-h-[480px]">
+          <div className="bg-gradient-to-br from-blue-900 to-blue-800 text-white px-7 py-10 pb-7 text-center">
+            <h1 className="mb-2 text-4xl font-bold text-white tracking-tight">Peer Evaluation</h1>
+            <p className="m-0 text-base text-white/80 font-normal">Collaborative Peer Review Platform</p>
           </div>
 
-          <div className="LoginForm">
-            <div className="LoginInputs">
-              <div className="LoginInputChunk">
-                <label htmlFor="username">Username</label>
+          <div className="flex flex-col p-7 flex-1">
+            <div className="flex flex-col gap-5 mb-6 w-full">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="username" className="text-base font-semibold text-blue-800">Username</label>
                 <Textbox
                   placeholder='Enter your username...'
                   onInput={setUsername}
-                  className='LoginInput'
+                  className='px-3.5 py-3 border-2 border-gray-200 rounded-lg text-base transition-all duration-300 ease bg-white focus:outline-none focus:border-blue-500 focus:bg-blue-50 focus:ring-2 focus:ring-blue-500/50'
                   value={username}
                 />
               </div>
 
-              <div className="LoginInputChunk">
+              <div className="flex flex-col gap-2">
                 <label htmlFor="password">Password</label>
                 <Textbox
                   type='password'
                   placeholder='Enter your password...'
                   onInput={setPassword}
-                  className='LoginInput'
+                  className='px-3.5 py-3 border-2 border-gray-200 rounded-lg text-base transition-all duration-300 ease bg-white focus:outline-none focus:border-blue-500 focus:bg-blue-50 focus:ring-2 focus:ring-blue-500/50'
                   onKeyPress={handleKeyPress}
                   value={password}
                 />
               </div>
             </div>
 
-            {error && <div className="ErrorMessage">{error}</div>}
+            {error && <div className="text-red-600 bg-red-100 border border-red-300 rounded-md px-3.5 py-3 mb-5 text-sm font-medium">{error}</div>}
 
-            <div className="LoginButtonWrapper">
+            <div className="w-full mb-0">
               <Button
                 onClick={()=> attemptLogin()}
-                children="Sign In"
-              />
+                className="w-full bg-gradient-to-br from-blue-800 to-blue-500 text-white py-3 px-6 text-base font-semibold border-none rounded-lg cursor-pointer transition-all duration-300 ease hover:-translate-y-0.5 hover:shadow-lg hover:brightness-105"
+              >
+                Sign In
+              </Button>
             </div>
 
-            <div className="LoginFooterLink">
-              <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+            <div className="text-center mt-4 pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-500">Don't have an account? <a href="/signup" className="text-blue-800 no-underline font-semibold transition-colors duration-300 ease hover:text-blue-500 hover:underline">Sign Up</a></p>
             </div>
 
-            <div className="QuickLoginSection">
-              <div className="QuickLoginHeader">
+            <div className="mt-5 pt-5 border-t border-gray-200">
+              <div className="mb-3">
                 <button
                   type="button"
                   onClick={() => setShowQuickLogin(!showQuickLogin)}
-                  className="flex items-center justify-between w-full cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center justify-between w-full cursor-pointer bg-transparent border-none p-0 font-sans text-gray-500 hover:text-blue-600 transition-colors"
                 >
-                  <span className="QuickLoginTitle">Quick Login (Test Accounts)</span>
-                
+                  <span className="text-sm font-semibold uppercase tracking-wider">Quick Login (Test Accounts)</span>
                 </button>
               </div>
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showQuickLogin ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="QuickLoginGrid">
+                <div className="grid grid-cols-2 gap-[10px]">
                   {TEST_CREDENTIALS.map((cred, index) => (
                     <button
                       key={index}
                       type="button"
-                      className="QuickLoginCard"
+                      className="flex flex-col items-start bg-gray-50 border border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 ease text-left font-sans hover:bg-blue-50 hover:border-blue-500 hover:-translate-y-0.5 hover:shadow-md"
                       onClick={() => quickLogin(cred)}
                     >
-                      <div className="QuickLoginRole">{cred.role}</div>
-                      <div className="QuickLoginDescription">{cred.description}</div>
-                      <div className="QuickLoginCredentials">
-                        <span>{cred.username}</span> / <span>{cred.password}</span>
+                      <div className="text-xs font-bold text-white bg-gradient-to-br from-blue-800 to-blue-500 py-1 px-2 rounded uppercase tracking-wider mb-1.5 self-start">{cred.role}</div>
+                      <div className="text-sm text-gray-800 mb-1 font-semibold">{cred.description}</div>
+                      <div className="text-xs text-gray-500 font-mono">
+                        <span className="text-blue-800 font-semibold">{cred.username}</span> / <span className="text-blue-800 font-semibold">{cred.password}</span>
                       </div>
                     </button>
                   ))}
@@ -141,8 +141,8 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="LoginFooter">
-            <p className="Credits">Made by Harsh, Parag, Guntash, Allen & Kartik</p>
+          <div className="border-t border-gray-200 px-7 py-5 text-center bg-gray-50">
+            <p className="m-0 text-sm text-gray-500 font-medium tracking-wide">Made by Harsh, Parag, Guntash, Allen & Kartik</p>
           </div>
         </div>
       </div>

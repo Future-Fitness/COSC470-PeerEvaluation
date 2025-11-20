@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { importCSV } from "../util/csv";
 import { listCourseMembers, getClassName } from "../util/api";
-
-import './ClassMembers.css'
 import { isTeacher } from "../util/login";
+
+interface Member {
+  id: number;
+  name: string;
+}
 
 export default function ClassMembers() {
   const { id } = useParams()
@@ -20,13 +23,13 @@ export default function ClassMembers() {
       setMembers(members)
       setClassName(classData.className);
     })()
-  }, [])  
+  }, [id])  
 
   return (
     <>
-      <div className="ClassHeader">
-        <div className="ClassHeaderLeft">
-          <h2>{className}</h2>
+      <div className="flex flex-row justify-between items-center p-3">
+        <div className="flex flex-row justify-between items-center p-3">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{className}</h2>
         </div>
 
         <div className="ClassHeaderRight">
@@ -49,11 +52,11 @@ export default function ClassMembers() {
         ]}
       />
 
-      <div className="ClassMemberList">
+      <div className="flex flex-col items-center justify-start w-full h-full">
         {
           members.map(member => {
             return (
-              <div key={member.id} className="Member">
+              <div key={member.id} className="w-4/5 p-[10px] m-3 border-b border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 text-gray-900 dark:text-gray-100">
                 {member.name} ({member.id})
               </div>
             )

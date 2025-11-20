@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import Button from './Button';
 import { createCriteria, createRubric } from '../util/api';
-import './RubricCreator.css';
+
+interface Criterion {
+    rubricID: number;
+    question: string;
+    scoreMax: number;
+    hasScore: boolean;
+}
 
 interface RubricCreatorProps {
     onRubricCreated?: (rubricId: number) => void;
@@ -55,27 +61,29 @@ export default function RubricCreator({ onRubricCreated, id }: RubricCreatorProp
     const handleRemoveSection = (index: number) => setNewCriteria(prev => prev.filter((_, i) => i !== index));
 
     return (
-        <div className="RubricCreator">
-            <h2>Create New Criteria</h2>
+        <div className="p-5 bg-gray-100 rounded-lg my-5">
+            <h2 className="mb-5 text-gray-800 text-xl font-bold">Create New Criteria</h2>
 
-            <label className="comment-checkbox">
+            <label className="block mb-5">
                 Reviewer can comment:
                 <input
                     type="checkbox"
                     checked={canComment}
                     onChange={() => setCanComment(prev => !prev)}
+                    className="ml-2"
                 />
             </label>
 
             {newCriteria.map((item, index) => (
-                <div key={index} className="criteria-input-section">
+                <div key={index} className="flex gap-[10px] items-center mb-[15px] p-[10px] bg-white rounded shadow-sm">
                     <input
                         type="text"
                         value={item.question}
                         onChange={(e) => handleQuestionChange(index, e.target.value)}
                         placeholder="Enter question"
+                        className="flex-1 p-2 border border-gray-300 rounded"
                     />
-                    <label>
+                    <label className="flex items-center gap-2">
                         Has score:
                         <input
                             type="checkbox"
@@ -90,13 +98,14 @@ export default function RubricCreator({ onRubricCreated, id }: RubricCreatorProp
                             value={item.scoreMax}
                             onChange={(e) => handleScoreMaxChange(index, Number(e.target.value))}
                             placeholder="Enter score max"
+                            className="w-[100px] p-2 border border-gray-300 rounded"
                         />
                     )}
                     <Button onClick={() => handleRemoveSection(index)}>Remove Criterion</Button>
                 </div>
             ))}
 
-            <div className="button-group">
+            <div className="flex gap-[10px] mt-5">
                 <Button onClick={handleAddNewSection}>Add New Criterion</Button>
                 <Button onClick={handleCreate}>Create</Button>
             </div>
