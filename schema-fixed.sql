@@ -1,8 +1,8 @@
-USE cosc471;
+
 
 -- Create all tables without foreign keys
-CREATE TABLE User (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE `User` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     hash_pass VARCHAR(128) NOT NULL,
@@ -10,26 +10,26 @@ CREATE TABLE User (
 );
 
 CREATE TABLE Course (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     teacherID INT NOT NULL,
     name VARCHAR(255)
 );
 
 CREATE TABLE Assignment (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     courseID INT,
     name VARCHAR(255),
     rubric VARCHAR(255)
 );
 
 CREATE TABLE CourseGroup (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     assignmentID INT NOT NULL
 );
 
 CREATE TABLE Submission (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     path VARCHAR(255),
     studentID INT,
     assignmentID INT
@@ -49,14 +49,14 @@ CREATE TABLE User_Courses (
 );
 
 CREATE TABLE Review (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     assignmentID INT,
     reviewerID INT,
     revieweeID INT
 );
 
 CREATE TABLE Criterion (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     reviewID INT,
     criterionRowID INT,
     grade INT,
@@ -64,13 +64,13 @@ CREATE TABLE Criterion (
 );
 
 CREATE TABLE Rubric (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     assignmentID INT,
     canComment BOOLEAN
 );
 
 CREATE TABLE Criteria_Description (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     rubricID INT,
     question VARCHAR(255),
     scoreMax INT,
@@ -79,17 +79,16 @@ CREATE TABLE Criteria_Description (
 
 -- TEST VALUES
 -- Credentials: test / 1234
-INSERT INTO User (id, name, email, is_teacher, hash_pass)
+INSERT INTO `User` (id, name, email, is_teacher, hash_pass)
   VALUES (1, 'test', 'test@test.com', false, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
          (2, 'test2', 'test2@test.com', true, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
          (3, 'alice', 'alice@example.com', false, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf'),
          (4, 'professor', 'prof@example.com', true, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf');
 INSERT INTO Assignment(id, courseID, name, rubric)
-    VALUES(1,1,"test","test-rubric");
+    VALUES(1,1,'test','test-rubric');
 
 -- Insert dummy Users (Students and Teachers)
--- actually make them hashed passwords, these wont login the dummy users (itll de-hash "hashedpassword2" instead of husidhgjashkjyh;y23421g)
-INSERT INTO User (name, email, hash_pass, is_teacher)
+INSERT INTO `User` (name, email, hash_pass, is_teacher)
 VALUES 
 
     ('JDoe', 'john.doe@example.com', '639675e26fc7399c0a1d61ee59eebfd5dab73fad055999f83105790758713af02ea6cb1afbc1be9f6f3ca2ea48327026218383713c8e0e18530b52c9dc147a1b', FALSE),
@@ -174,7 +173,7 @@ VALUES
     (5, 4, 5); 
 
 -- Insert dummy Criteria
-INSERT INTO Criteria (reviewID, grade, comments)
+INSERT INTO Criterion (reviewID, grade, comments)
 VALUES
     (1, 85, 'Good job!'),
     (2, 90, 'Excellent work!'),
@@ -192,13 +191,13 @@ VALUES
     (5); 
 
 -- Insert dummy Criteria_Description
-INSERT INTO Criteria_Description (scoreMax, canComment)
+INSERT INTO Criteria_Description (rubricID, question, scoreMax)
 VALUES
-    (100, TRUE),
-    (100, TRUE),
-    (100, FALSE),
-    (100, TRUE),
-    (100, TRUE); 
+    (1, 'Quality of work', 100),
+    (2, 'Quality of work', 100),
+    (3, 'Completeness', 100),
+    (4, 'Quality of work', 100),
+    (5, 'Quality of work', 100); 
 -- -- Add foreign key constraints
 -- ALTER TABLE Assignment
 --     ADD CONSTRAINT fk_assignment_course

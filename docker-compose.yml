@@ -1,16 +1,4 @@
 services:
-  mariadb:
-    image: mariadb:latest
-    restart: always
-    environment:
-
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=cosc471
-    volumes:
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    ports:
-      - 33123:3306
-  
   frontend:
     restart: always
     build:
@@ -29,16 +17,20 @@ services:
     build:
       context: .
       dockerfile: ./back.dockerfile
+    env_file:
+      - ./backend/.env
     environment:
-      - MYSQL_HOST=mariadb
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASS=root
-      - MYSQL_DB=cosc471
-      - PORT=5008
+      # These will be loaded from backend/.env
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASS=${MYSQL_PASS}
+      - MYSQL_DB=${MYSQL_DB}
+      - PORT=${PORT}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
     volumes:
       - ./backend/src:/app/src
     ports:
       - 5008:5008
-    depends_on:
-      - mariadb

@@ -4,6 +4,7 @@ import RubricCreator from "../components/RubricCreator";
 import RubricDisplay from "../components/RubricDisplay";
 import TabNavigation from "../components/TabNavigation";
 import { isTeacher } from "../util/login";
+import { Home, Users } from 'lucide-react'; // Import Lucide React icons
 
 import {
   listStuGroup,
@@ -83,10 +84,12 @@ export default function Assignment() {
           {
             label: "Home",
             path: `/assignments/${id}`,
+            icon: <Home className="w-4 h-4" />,
           },
           {
             label: "Group",
             path: `/assignments/${id}/group`,
+            icon: <Users className="w-4 h-4" />,
           }
         ]}
       />

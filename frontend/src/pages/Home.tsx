@@ -1,22 +1,32 @@
 import { useEffect, useState } from "react";
 import ClassCard from "../components/ClassCard";
+import { LayoutDashboard } from 'lucide-react'; // Import LayoutDashboard icon
+import Loader from '../components/Loader'; // Import Loader component
 
 import { listClasses } from "../util/api";
 import { isTeacher } from "../util/login";
 
 export default function Home() {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     ;(async () => {
+      setLoading(true); // Set loading to true before fetching
       const resp = await listClasses()
       setCourses(resp)
+      setLoading(false); // Set loading to false after fetching
     })()
   }, [])
 
+  if (loading) {
+    return <Loader fullScreen />; // Render full-screen loader when loading
+  }
+
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-8">
-      <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-2 pb-4 border-b-2 border-gray-200 dark:border-gray-700">
+      <h1 className="text-3xl font-semibold text-gray-800 dark:text-white mb-4 pb-4 border-b-2 border-gray-200 dark:border-gray-700 flex items-center gap-3">
+        <LayoutDashboard className="w-8 h-8 text-primary-600 dark:text-primary-400" />
         Peer Review Dashboard
       </h1>
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './SignupPage.css';
 import Textbox from '../components/Textbox';
 import Button from '../components/Button';
 
@@ -67,72 +66,74 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="SignupPage">
-      <div className="SignupContainer">
-        <div className="SignupBlock">
-          <div className="SignupHeader">
-            <h1 className="AppTitle">Peer Evaluation</h1>
-            <p className="AppSubtitle">Create Your Account</p>
+    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-blue-800 to-blue-500 dark:from-gray-900 dark:to-gray-800 p-5">
+      <div className="flex flex-col items-center justify-center w-full max-w-[450px]">
+        <div className="flex flex-col items-stretch justify-start w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden min-h-[480px]">
+          <div className="bg-gradient-to-br from-blue-900 to-blue-800 dark:from-gray-700 dark:to-gray-900 text-white dark:text-gray-100 px-7 py-10 pb-7 text-center">
+            <h1 className="mb-2 text-4xl font-bold tracking-tight">Peer Evaluation</h1>
+            <p className="m-0 text-base font-normal">Create Your Account</p>
           </div>
 
-          <div className="SignupForm">
-            <div className="SignupInputs">
-              <div className="SignupInputChunk">
-                <label htmlFor="username">Username</label>
+          <div className="flex flex-col p-7 flex-1">
+            <div className="flex flex-col gap-5 mb-6 w-full">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="username" className="text-base font-semibold text-blue-800 dark:text-blue-400">Username</label>
                 <Textbox
                   placeholder='Choose a username...'
                   onInput={setUsername}
-                  className='SignupInput'
+                  value={username}
                 />
               </div>
 
-              <div className="SignupInputChunk">
-                <label htmlFor="email">Email</label>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email" className="text-base font-semibold text-blue-800 dark:text-blue-400">Email</label>
                 <Textbox
                   type='email'
                   placeholder='Enter your email...'
                   onInput={setEmail}
-                  className='SignupInput'
+                  value={email}
                 />
               </div>
 
-              <div className="SignupInputChunk">
-                <label htmlFor="password">Password</label>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="password" className="text-base font-semibold text-blue-800 dark:text-blue-400">Password</label>
                 <Textbox
                   type='password'
                   placeholder='Create a password...'
                   onInput={setPassword}
-                  className='SignupInput'
+                  value={password}
                 />
               </div>
 
-              <div className="SignupInputChunk">
-                <label htmlFor="confirmPassword">Confirm Password</label>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="confirmPassword" className="text-base font-semibold text-blue-800 dark:text-blue-400">Confirm Password</label>
                 <Textbox
                   type='password'
                   placeholder='Confirm your password...'
                   onInput={setConfirmPassword}
-                  className='SignupInput'
                   onKeyPress={handleKeyPress}
+                  value={confirmPassword}
                 />
               </div>
             </div>
 
-            {error && <div className="ErrorMessage">{error}</div>}
-            {success && <div className="SuccessMessage">{success}</div>}
+            {error && <div className="text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-md px-3.5 py-3 mb-5 text-sm font-medium">{error}</div>}
+            {success && <div className="text-green-600 dark:text-green-300 bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-md px-3.5 py-3 mb-5 text-sm font-medium">{success}</div>}
 
             <Button
               onClick={() => attemptSignup()}
-              children="Create Account"
-            />
+              className="w-full"
+            >
+              Create Account
+            </Button>
 
-            <div className="SignupFooterLink">
-              <p>Already have an account? <a href="/">Sign In</a></p>
+            <div className="text-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Already have an account? <a href="/" className="text-blue-800 dark:text-blue-400 no-underline font-semibold transition-colors duration-300 ease hover:text-blue-500 dark:hover:text-blue-300 hover:underline">Sign In</a></p>
             </div>
           </div>
 
-          <div className="SignupFooter">
-            <p className="Credits">Made by Harsh, Parag, Guntash, Allen & Kartik</p>
+          <div className="border-t border-gray-200 dark:border-gray-700 px-7 py-5 text-center bg-gray-50 dark:bg-gray-900">
+            <p className="m-0 text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">Made by Harsh, Parag, Guntash, Allen & Kartik</p>
           </div>
         </div>
       </div>

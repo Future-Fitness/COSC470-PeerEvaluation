@@ -1,4 +1,4 @@
-USE cosc471;
+
 
 -- Create all tables without foreign keys
 CREATE TABLE User (

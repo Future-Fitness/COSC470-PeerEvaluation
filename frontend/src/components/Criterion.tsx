@@ -36,7 +36,7 @@ export default function Criterion(props: props) {
                     const cellValue = i + 1;
                     const isReviewed = cellValue === props.grade;
                     const isClicked = clickedCell === cellValue;
-                    const cellClasses = `grow text-center p-2 box-border border border-gray-300 dark:border-gray-600 cursor-pointer ${isReviewed ? 'bg-green-300 dark:bg-green-700' : ''} ${isClicked ? 'bg-yellow-300 dark:bg-yellow-700' : ''}`;
+                    const cellClasses = `grow text-center p-2 box-border border border-gray-300 dark:border-gray-600 cursor-pointer min-w-[40px] ${isReviewed ? 'bg-green-300 dark:bg-green-700' : ''} ${isClicked ? 'bg-yellow-300 dark:bg-yellow-700' : ''}`;
                     return (
                         <td
                             key={i}

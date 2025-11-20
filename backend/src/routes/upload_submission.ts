@@ -1,0 +1,113 @@
+import { FastifyInstance } from 'fastify';
+import { pipeline } from 'stream/promises';
+import cloudinary from '../util/cloudinary';
+import models from '../util/database';
+
+const Submission = models.Submission;
+
+export default function (app: FastifyInstance) {
+  app.post('/upload_submission', async (req, resp) => {
+    try {
+      // Get the multipart data
+      const data = await req.file();
+
+      if (!data) {
+        resp.status(400).send({ error: 'No file uploaded' });
+        return;
+      }
+
+      // Get form fields
+      const assignmentID = data.fields.assignmentID?.value;
+
+      if (!assignmentID) {
+        resp.status(400).send({ error: 'Assignment ID is required' });
+        return;
+      }
+
+      // Get authenticated user from session
+      const token = req.headers.authorization?.split('Bearer ')[1];
+      if (!token) {
+        resp.status(401).send({ error: 'Unauthorized' });
+        return;
+      }
+
+      // @ts-expect-error session is added by middleware
+      const session = app.session[token];
+      if (!session) {
+        resp.status(401).send({ error: 'Invalid session' });
+        return;
+      }
+
+      const studentID = session.id;
+
+      // Create a promise to upload to Cloudinary
+      const uploadPromise = new Promise<any>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: `submissions/${assignmentID}`,
+            resource_type: 'auto', // Automatically detect file type
+            public_id: `student_${studentID}_${Date.now()}`,
+            use_filename: true,
+            unique_filename: true,
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+
+        // Pipe the file stream to Cloudinary
+        data.file.pipe(uploadStream);
+      });
+
+      // Wait for upload to complete
+      const uploadResult = await uploadPromise;
+
+      // Check if student already has a submission for this assignment
+      const existingSubmission = await Submission.findOne({
+        where: {
+          studentID,
+          assignmentID,
+        },
+      });
+
+      let submission;
+      if (existingSubmission) {
+        // Update existing submission
+        await existingSubmission.update({
+          path: uploadResult.secure_url,
+        });
+        submission = existingSubmission;
+      } else {
+        // Create new submission
+        submission = await Submission.create({
+          path: uploadResult.secure_url,
+          studentID,
+          assignmentID: parseInt(assignmentID as string),
+        });
+      }
+
+      resp.send({
+        message: 'File uploaded successfully',
+        submission: {
+          id: submission.id,
+          path: submission.path,
+          studentID: submission.studentID,
+          assignmentID: submission.assignmentID,
+        },
+        cloudinary: {
+          url: uploadResult.secure_url,
+          publicId: uploadResult.public_id,
+          format: uploadResult.format,
+          resourceType: uploadResult.resource_type,
+        },
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      resp.status(500).send({
+        error: 'Failed to upload file',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+}

@@ -28,6 +28,8 @@ export default function (app: FastifyInstance) {
       return;
     }
 
+    const defaultStudentPassword = process.env.DEFAULT_STUDENT_PASSWORD || 'letmein'; // Default to 'letmein' if env var is not set
+
     try {
       const parsed = csv2json(data.students) as {
         id: number,
@@ -47,8 +49,7 @@ export default function (app: FastifyInstance) {
             name: student.name,
             email: student.email,
             is_teacher: false,
-            // Default password is letmein
-            hash_pass: sha512(student.password || 'letmein'),
+            hash_pass: sha512(student.password || defaultStudentPassword),
           }
         });
 

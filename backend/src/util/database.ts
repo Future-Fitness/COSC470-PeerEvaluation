@@ -10,7 +10,12 @@ const client = new Sequelize({
   port: parseInt(process.env.MYSQL_PORT as string),
   dialect: 'mysql',
   dialectModule: mysql,
-  // TODO disable on prod
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  },
   logging: false,
 })
 

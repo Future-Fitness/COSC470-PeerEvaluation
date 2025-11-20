@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.0.0",
+    "@fastify/multipart": "^9.3.0",
+    "cloudinary": "^2.8.0",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "fastify-plugin": "^5.0.1",

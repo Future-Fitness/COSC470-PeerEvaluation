@@ -40,7 +40,7 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 text-primary-500 animate-spin" />
+          <Loader2 className="w-10 h-10 text-primary-500 dark:text-primary-400 animate-spin" />
           <p className="text-gray-600 dark:text-gray-400">Loading profile...</p>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function Profile() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
-        <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-8 pb-4 border-b-2 border-gray-200 dark:border-gray-700">
+        <h1 className="text-3xl font-semibold text-gray-800 dark:text-white mb-8 pb-4 border-b-2 border-gray-200 dark:border-gray-700">
           My Profile
         </h1>
 
@@ -80,10 +80,10 @@ export default function Profile() {
 
           {/* Profile Content */}
           <div className="px-8 pb-8">
-            {/* Avatar */}
+            {/* Avatar - Gummy Bear */}
             <div className="relative -mt-16 mb-6">
-              <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden shadow-lg">
-                <User className="w-16 h-16 text-gray-400 dark:text-gray-500" />
+              <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-400 flex items-center justify-center overflow-hidden shadow-lg">
+                <span className="text-6xl" role="img" aria-label="gummy bear">🐻</span>
               </div>
             </div>
 
@@ -91,7 +91,7 @@ export default function Profile() {
             <div className="space-y-6">
               {/* Name & Role Badge */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {profile.name}
                 </h2>
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
