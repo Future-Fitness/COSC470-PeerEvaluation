@@ -14,6 +14,7 @@ import {
   createCriterion,
   getReview
 } from "../util/api";
+import Button from "../components/Button";
 
 interface StudentGroups {
   userID: number;
@@ -33,22 +34,38 @@ export default function Assignment() {
   const [selectedCriteria, setSelectedCriteria] = useState<SelectedCriterion[]>([]);
   const [review, setReview] = useState<number[]>([]);
 
+  // Fetch student ID once on mount
   useEffect(() => {
-      (async () => {
-        const stuID = await getUserId();
-      setStuID(stuID);
+    (async () => {
+      const userId = await getUserId();
+      setStuID(userId);
+    })();
+  }, []);
+
+  // Fetch student group when stuID is available
+  useEffect(() => {
+    if (stuID === 0) return;
+    
+    (async () => {
       const stus = await listStuGroup(Number(id), stuID);
       setStuGroup(stus);
-        try {
-          if (revieweeID === 0) return;
-          const reviewResponse = await getReview(Number(id), stuID, revieweeID);
-          const reviewData = await reviewResponse.json();
-          setReview(reviewData.grades);
-          console.log("Review data:", reviewData);
-        } catch (error) {
-          console.error('Error fetching review:', error);
-        }
-      })();
+    })();
+  }, [id, stuID]);
+
+  // Fetch review when revieweeID changes
+  useEffect(() => {
+    if (revieweeID === 0 || stuID === 0) return;
+    
+    (async () => {
+      try {
+        const reviewResponse = await getReview(Number(id), stuID, revieweeID);
+        const reviewData = await reviewResponse.json();
+        setReview(reviewData.grades);
+        console.log("Review data:", reviewData);
+      } catch (error) {
+        console.error('Error fetching review:', error);
+      }
+    })();
   }, [revieweeID, id, stuID]);
 
   const handleCriterionSelect = (row: number, column: number) => {
@@ -108,7 +125,7 @@ export default function Assignment() {
           </div>
         }
 
-      !isTeacher() && (
+        {!isTeacher() && (
         <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg shadow-inner">
           <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Select a group member to review</h3>
           <div className="space-y-3 mb-4">
@@ -149,7 +166,8 @@ export default function Assignment() {
             }
           }}>Submit Review</Button>
         </div>
-      )}
+        )}
       </div>
     </div>
-
+  );
+}
