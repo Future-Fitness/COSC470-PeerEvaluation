@@ -583,7 +583,8 @@ export const uploadSubmission = async (assignmentID: number, file: File): Promis
   maybeHandleExpire(response);
 
   if (!response.ok) {
-    throw new Error(`Response status: ${response.status}`);
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || `Response status: ${response.status}`);
   }
 
   return await response.json();

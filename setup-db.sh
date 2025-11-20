@@ -10,18 +10,14 @@ echo "⏳ Waiting for database..."
 sleep 8
 
 # Seed database
-echo "🌱 Seeding database with schema.sql..."
+echo "🌱 Seeding database..."
 docker-compose exec -T mariadb mysql -uroot -proot cosc471 < schema.sql
 
 echo ""
 echo "✅ Done!"
 echo ""
-echo "📊 Database: localhost:3306"
-echo "   User: root"
-echo "   Password: root"
-echo "   Database: cosc471"
-echo ""
 echo "🔐 Test Accounts:"
 echo "   test@test.com / 1234"
-echo "   test2@test.com / 1234 (teacher)"
+echo "   test2@test.com / 1234"
 echo ""
+echo "📊 Database: localhost:3306 (root/root/cosc471)"

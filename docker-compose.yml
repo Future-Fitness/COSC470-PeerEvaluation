@@ -1,4 +1,21 @@
 services:
+  mariadb:
+    image: mariadb:11
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cosc471
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   frontend:
     restart: always
     build:
@@ -34,3 +51,9 @@ services:
       - ./backend/src:/app/src
     ports:
       - 5008:5008
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
