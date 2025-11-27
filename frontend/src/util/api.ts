@@ -355,6 +355,8 @@ export const saveGroups = async (groupID: number, userID: number, assignmentID :
   if (!response.ok) {
     throw new Error(`Response status: ${response.status}`);
   }
+
+  return await response.json();
 }
 
 export const getCriteria = async (rubricID: number) => {
@@ -468,6 +470,8 @@ export const deleteGroup = async (groupID: number) => {
   if (!response.ok) {
     throw new Error(`Response status: ${response.status}`);
   }
+
+  return await response.json();
 }
 
 export const createReview = async (assignmentID: number, reviewerID: number, revieweeID: number) => {
@@ -569,6 +573,27 @@ export const createGroup = async(assignmentID: number, name: string, id: number)
   return await response.json();
 }
 
+export const initializeAssignmentGroups = async(assignmentID: number) => {
+  const response = await fetch(`${BASE_URL}/initialize_assignment_groups`, {
+    method: "POST",
+    body: JSON.stringify({
+      assignmentID
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`
+    }
+  });
+  
+  maybeHandleExpire(response);
+
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
 export const uploadSubmission = async (assignmentID: number, file: File): Promise<any> => {
   const formData = new FormData();
   formData.append('file', file);
@@ -607,6 +632,24 @@ export const getMySubmission = async (assignmentID: number): Promise<Submission 
   if (resp.status === 404) {
     return null; // No submission found
   }
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
+export const getAssignmentSubmissions = async (assignmentID: number): Promise<SubmissionsWithUser[]> => {
+  const resp = await fetch(`${BASE_URL}/submissions/${assignmentID}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  maybeHandleExpire(resp);
 
   if (!resp.ok) {
     throw new Error(`Response status: ${resp.status}`);

@@ -80,6 +80,9 @@ export function initModels(sequelize: Sequelize) {
   const User_Course = _User_Course.initModel(sequelize);
   const OTP = _OTP.initModel(sequelize);
 
+  // Define associations
+  Group_Member.belongsTo(User, { foreignKey: 'userID' });
+  User.hasMany(Group_Member, { foreignKey: 'userID' });
 
   return {
     Assignment: Assignment,

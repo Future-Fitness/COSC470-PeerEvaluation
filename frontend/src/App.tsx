@@ -12,7 +12,6 @@ import ClassMembers from "./pages/ClassMembers";
 import AllStudents from "./pages/AllStudents";
 import AssignmentRubric from "./pages/AssignmentRubric"; // Renamed import
 import AssignmentDetail from "./pages/AssignmentDetail"; // New import
-import Group from "./pages/Group";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
@@ -42,7 +41,6 @@ function AppContent() {
             <Route path="/classes/:id/members" element={<ClassMembers />} />
             <Route path="/assignments/:id" element={<AssignmentDetail />} /> {/* Updated route */}
             <Route path="/assignments/:id/rubric" element={<AssignmentRubric />} /> {/* New route */}
-            <Route path="/assignments/:id/group" element={<Group />} />
           </Route>
         </Routes>
       </div>

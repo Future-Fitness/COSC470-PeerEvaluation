@@ -1,6 +1,7 @@
-const { Sequelize } = require('sequelize');
-const mysql = require('mysql2');
-require('dotenv').config({ path: __dirname + '/.env' });
+import { Sequelize } from 'sequelize';
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+dotenv.config({ path: __dirname + '/.env' });
 
 const db = new Sequelize({
   username: process.env.MYSQL_USER,

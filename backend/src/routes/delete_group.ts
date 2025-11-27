@@ -7,29 +7,35 @@ export default function (app: FastifyInstance) {
 
   app.post('/delete_group', async (req, resp) => {
     const { groupID } = req.body as {
-        groupID: number
+      groupID: number;
     };
 
-    //update all members of the group to have groupID -1
-    const groupMembers = await members.update({
-        groupID: -1
-    }, {
-        where: {
-            groupID: groupID
-        }
-    });
+    if (!groupID || typeof groupID !== 'number') {
+      return resp.status(400).send({ error: 'Invalid groupID provided' });
+    }
 
-    //delete the group from the CourseGroup table
-    await group.destroy({
-        where: {
-            id: groupID
-        }
-    });
+    try {
+      // Update all members of the group to have groupID -1
+      const groupMembers = await members.update(
+        { groupID: -1 },
+        { where: { groupID } }
+      );
 
-    resp.send({
-      message: 'Group deleted, all members updated',
-      id: groupID,
-      groupMembers: groupMembers
-    });
+      // Delete the group from the CourseGroup table
+      const deletedGroup = await group.destroy({ where: { id: groupID } });
+
+      if (deletedGroup === 0) {
+        return resp.status(404).send({ error: 'Group not found' });
+      }
+
+      resp.send({
+        message: 'Group deleted, all members updated',
+        id: groupID,
+        groupMembers,
+      });
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      resp.status(500).send({ error: 'Failed to delete group' });
+    }
   });
 }

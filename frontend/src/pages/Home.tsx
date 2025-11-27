@@ -18,6 +18,8 @@ export default function Home() {
   const [isCreateClassModalOpen, setIsCreateClassModalOpen] = useState(false); // State for modal visibility
   const [newClassName, setNewClassName] = useState(''); // State for new class name
   const [isCreatingClass, setIsCreatingClass] = useState(false); // State for class creation loading
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // State for image modal visibility
+  const [imageUrl, setImageUrl] = useState(''); // State for image URL
 
   const fetchClassesAndProfile = async () => {
     setLoading(true);
@@ -61,6 +63,11 @@ export default function Home() {
     }
   };
 
+  const handleImageClick = (url: string) => {
+    setImageUrl(url);
+    setIsImageModalOpen(true);
+  };
+
   if (loading) {
     return <Loader fullScreen />;
   }
@@ -92,6 +99,7 @@ export default function Home() {
                 name={course.name}
                 subtitle={`Teacher ID: ${course.teacherID}`}
                 classId={course.id} // Pass classId prop
+                onImageClick={handleImageClick} // Pass onImageClick prop
               />
             )
           })
@@ -128,6 +136,15 @@ export default function Home() {
             {isCreatingClass ? 'Creating...' : 'Create Class'}
           </Button>
         </div>
+      </Modal>
+
+      {/* Assignment Image Modal */}
+      <Modal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        title="Assignment Image"
+      >
+        <img src={imageUrl} alt="Assignment" className="w-full h-auto" />
       </Modal>
     </div>
   )

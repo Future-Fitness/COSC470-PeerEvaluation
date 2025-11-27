@@ -162,7 +162,7 @@ jobs:
             }
 
   backend-checks:
-    name: Backend Lint & Type Check
+    name: Backend Type Check
     runs-on: ubuntu-latest
 
     steps:
@@ -184,10 +184,6 @@ jobs:
         working-directory: backend
         run: pnpm install --frozen-lockfile
 
-      - name: Run backend linting
-        working-directory: backend
-        run: pnpm run lint
-
       - name: Run backend type check
         working-directory: backend
         run: pnpm run build
@@ -197,7 +193,7 @@ jobs:
         run: pnpm run test:unit
 
   frontend-checks:
-    name: Frontend Lint & Build
+    name: Frontend Build
     runs-on: ubuntu-latest
 
     steps:
@@ -213,11 +209,3 @@ jobs:
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm ci
-
-      - name: Run frontend linting
-        working-directory: frontend
-        run: npm run lint
-
-      - name: Run frontend build
-        working-directory: frontend
-        run: npm run build

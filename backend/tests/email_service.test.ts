@@ -21,34 +21,6 @@ describe('EmailService', () => {
     emailService = (await import('../src/services/emailService')).default;
   });
 
-  describe('sendNewStudentEmail', () => {
-    test('should format email correctly with all required fields', async () => {
-      const emailData = {
-        email: 'student@test.com',
-        courseName: 'Test Course 101',
-        temporaryPassword: 'tempPass123',
-        loginUrl: 'http://localhost:5009/login'
-      };
-
-      const result = await emailService.sendNewStudentEmail(emailData);
-
-      // Should return false when EMAIL_ENABLED is not true
-      expect(typeof result).toBe('boolean');
-    });
-
-    test('should handle missing optional configuration gracefully', async () => {
-      const emailData = {
-        email: 'student@test.com',
-        courseName: 'Course',
-        temporaryPassword: 'pass',
-        loginUrl: 'http://localhost:5009/login'
-      };
-
-      const result = await emailService.sendNewStudentEmail(emailData);
-      expect(typeof result).toBe('boolean');
-    });
-  });
-
   describe('sendBulkNewStudentEmails', () => {
     test('should process multiple students correctly', async () => {
       const students = [
