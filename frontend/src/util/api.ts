@@ -355,6 +355,8 @@ export const saveGroups = async (groupID: number, userID: number, assignmentID :
   if (!response.ok) {
     throw new Error(`Response status: ${response.status}`);
   }
+
+  return await response.json();
 }
 
 export const getCriteria = async (rubricID: number) => {
@@ -468,6 +470,8 @@ export const deleteGroup = async (groupID: number) => {
   if (!response.ok) {
     throw new Error(`Response status: ${response.status}`);
   }
+
+  return await response.json();
 }
 
 export const createReview = async (assignmentID: number, reviewerID: number, revieweeID: number) => {
@@ -564,6 +568,27 @@ export const createGroup = async(assignmentID: number, name: string, id: number)
 
   if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+export const initializeAssignmentGroups = async(assignmentID: number) => {
+  const response = await fetch(`${BASE_URL}/initialize_assignment_groups`, {
+    method: "POST",
+    body: JSON.stringify({
+      assignmentID
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`
+    }
+  });
+  
+  maybeHandleExpire(response);
+
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
   }
 
   return await response.json();
