@@ -36,9 +36,9 @@ const testUsers = {
     isTeacher: true,
   },
   alice: {
-    username: 'alice',
+    username: 'Harsh2',
     password: 'password123',
-    email: 'alice@example.com',
+    email: 'canadaharsh2002@gmail.com',
     isTeacher: false,
   },
   professor: {

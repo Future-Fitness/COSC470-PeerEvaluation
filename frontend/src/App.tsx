@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ClassHome from "./pages/ClassHome";
 import ClassMembers from "./pages/ClassMembers";
+import AllStudents from "./pages/AllStudents";
 import AssignmentRubric from "./pages/AssignmentRubric"; // Renamed import
 import AssignmentDetail from "./pages/AssignmentDetail"; // New import
 import Group from "./pages/Group";
@@ -34,6 +35,7 @@ function AppContent() {
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Home />} />
             <Route path="/classes/create" element={<CreateClass />} />
+            <Route path="/students" element={<AllStudents />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/classes/:id/home" element={<ClassHome />} />

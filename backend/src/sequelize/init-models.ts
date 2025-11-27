@@ -21,6 +21,8 @@ import { User as _User } from "./User";
 import type { UserAttributes, UserCreationAttributes } from "./User";
 import { User_Course as _User_Course } from "./User_Course";
 import type { User_CourseAttributes, User_CourseCreationAttributes } from "./User_Course";
+import { OTP as _OTP } from "./OTP";
+import type { OTPAttributes, OTPCreationAttributes } from "./OTP";
 
 export {
   _Assignment as Assignment,
@@ -34,6 +36,7 @@ export {
   _Submission as Submission,
   _User as User,
   _User_Course as User_Course,
+  _OTP as OTP,
 };
 
 export type {
@@ -59,6 +62,8 @@ export type {
   UserCreationAttributes,
   User_CourseAttributes,
   User_CourseCreationAttributes,
+  OTPAttributes,
+  OTPCreationAttributes,
 };
 
 export function initModels(sequelize: Sequelize) {
@@ -73,6 +78,7 @@ export function initModels(sequelize: Sequelize) {
   const Submission = _Submission.initModel(sequelize);
   const User = _User.initModel(sequelize);
   const User_Course = _User_Course.initModel(sequelize);
+  const OTP = _OTP.initModel(sequelize);
 
 
   return {
@@ -87,5 +93,6 @@ export function initModels(sequelize: Sequelize) {
     Submission: Submission,
     User: User,
     User_Course: User_Course,
+    OTP: OTP,
   };
 }

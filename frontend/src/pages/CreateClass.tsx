@@ -13,13 +13,9 @@ export default function CreateClass() {
         showError('Please enter a class name.');
         return;
       }
-      const response = await createClass(name);
-      
-      if (!response.ok) {
-        throw new Error('Failed to create class');
-      }
-
-      showSuccess('Class created successfully!');//stay on page - as per Ruth.
+      await createClass(name);
+      showSuccess('Class created successfullyc!');//stay on page - as per Ruth.
+      setName(''); // Clear the input after successful creation
     } catch (error) {
       console.error('Error creating class:', error);
       showError('Error creating class.');

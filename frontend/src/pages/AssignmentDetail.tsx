@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SubmissionUpload from '../components/SubmissionUpload';
-import TabNavigation from '../components/TabNavigation';
 import { getAssignmentById, Assignment, getMyProfile, UserProfile, getClassName } from '../util/api';
 import { BookOpen, Loader2, ArrowLeft, Users, FileText, BookMarked, Home, GitBranch } from 'lucide-react';
+import Group from './Group';
+import AssignmentRubric from './AssignmentRubric';
+
+type TabType = 'home' | 'groups' | 'rubric';
 
 export default function AssignmentDetail() {
   const { id } = useParams();
@@ -13,6 +16,7 @@ export default function AssignmentDetail() {
   const [error, setError] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [className, setClassName] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<TabType>('home');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,73 +138,101 @@ export default function AssignmentDetail() {
       {/* Tab Navigation */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto">
-          <TabNavigation
-            tabs={[
-              {
-                label: "Home",
-                path: `/assignments/${id}`,
-                icon: <Home className="w-4 h-4" />,
-              },
-              {
-                label: "Groups",
-                path: `/assignments/${id}/group`,
-                icon: <GitBranch className="w-4 h-4" />,
-              },
-              {
-                label: "Rubric",
-                path: `/assignments/${id}/rubric`,
-                icon: <BookMarked className="w-4 h-4" />,
-              }
-            ]}
-          />
+          <div className="flex gap-1 px-6">
+            <button
+              onClick={() => setActiveTab('home')}
+              className={`flex items-center gap-2 px-4 py-3 font-medium transition-all border-b-2 ${
+                activeTab === 'home'
+                  ? 'text-primary-600 dark:text-primary-400 border-primary-600 dark:border-primary-400'
+                  : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              Home
+            </button>
+            <button
+              onClick={() => setActiveTab('groups')}
+              className={`flex items-center gap-2 px-4 py-3 font-medium transition-all border-b-2 ${
+                activeTab === 'groups'
+                  ? 'text-primary-600 dark:text-primary-400 border-primary-600 dark:border-primary-400'
+                  : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <GitBranch className="w-4 h-4" />
+              Groups
+            </button>
+            <button
+              onClick={() => setActiveTab('rubric')}
+              className={`flex items-center gap-2 px-4 py-3 font-medium transition-all border-b-2 ${
+                activeTab === 'rubric'
+                  ? 'text-primary-600 dark:text-primary-400 border-primary-600 dark:border-primary-400'
+                  : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <BookMarked className="w-4 h-4" />
+              Rubric
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Assignment Details Card */}
-        {assignment.rubric && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-              Assignment Description
-            </h2>
-            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-              {assignment.rubric}
-            </p>
-          </div>
-        )}
-
-        {/* Submission Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
-          {currentUser && !currentUser.isTeacher ? (
-            // Student View
-            <>
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-                <FileText className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                Your Submission
-              </h2>
-              <SubmissionUpload assignmentId={assignmentId} />
-            </>
-          ) : (
-            // Teacher View
-            <>
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-                <Users className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                Student Submissions
-              </h2>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 text-center">
-                <FileText className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-3" />
-                <p className="text-gray-500 dark:text-gray-400 text-lg">
-                  Student submissions viewer coming soon
-                </p>
-                <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
-                  This feature will allow you to view and grade all student submissions
+        {activeTab === 'home' && (
+          <>
+            {/* Assignment Details Card */}
+            {assignment.rubric && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  Assignment Description
+                </h2>
+                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  {assignment.rubric}
                 </p>
               </div>
-            </>
-          )}
-        </div>
+            )}
+
+            {/* Submission Section */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
+              {currentUser && !currentUser.isTeacher ? (
+                // Student View
+                <>
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    Your Submission
+                  </h2>
+                  <SubmissionUpload assignmentId={assignmentId} />
+                </>
+              ) : (
+                // Teacher View
+                <>
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                    <Users className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    Student Submissions
+                  </h2>
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 text-center">
+                    <FileText className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-3" />
+                    <p className="text-gray-500 dark:text-gray-400 text-lg">
+                      Student submissions viewer coming soon
+                    </p>
+                    <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
+                      This feature will allow you to view and grade all student submissions
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        )}
+
+        {activeTab === 'groups' && (
+          <Group />
+        )}
+
+        {activeTab === 'rubric' && (
+          <AssignmentRubric />
+        )}
       </div>
     </div>
   );

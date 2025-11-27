@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from './Button';
 import { createCriteria, createRubric } from '../util/api';
+import { showSuccess, showError } from '../util/toast';
 
 interface Criterion {
     rubricID: number;
@@ -25,13 +26,14 @@ export default function RubricCreator({ onRubricCreated, id }: RubricCreatorProp
             await Promise.all(newCriteria.map(({ question, scoreMax, hasScore }) => 
                 createCriteria(newRubricID, question, scoreMax, canComment, hasScore)
             ));
-            alert("Rubric created successfully!");
+            showSuccess("Rubric created successfully!");
             window.location.reload();
             if (onRubricCreated) {
                 onRubricCreated(newRubricID);
             }
         } catch (error) {
             console.error("Error creating criteria:", error);
+            showError("Failed to create rubric. Please try again.");
         }
     };
 

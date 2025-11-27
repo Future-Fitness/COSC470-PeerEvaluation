@@ -30,18 +30,19 @@ app.addHook('onRequest', async (request, reply) => {
   }
 })
 
-app.register(fp(authentication), { noAuthRoutes: ['/login', '/ping'] })
+app.register(fp(authentication), { noAuthRoutes: ['/login', '/ping', '/request_otp', '/verify_otp'] })
 app.decorate('session', {})
 
-;(async () => {
-  // Read routes, run the default export as a function, passing the app
-  const files = fs.readdirSync(path.join(__dirname, 'routes'));
-  for (const file of files) {
-    const name = file.replace('.ts', '');
-    const route = await import(`./routes/${name}`);
+// Register routes before app starts listening
+console.log('Starting route registration...');
+const files = fs.readdirSync(path.join(__dirname, 'routes'));
+console.log(`Found ${files.length} route files`);
 
-    //console.log('Registering route', name);
+files.forEach(file => {
+  const name = file.replace('.ts', '');
+  console.log(`Registering route: ${name}`);
+  const route = require(`./routes/${name}`);
+  route.default(app);
+});
 
-    route.default(app);
-  }
-})()
+console.log('Route registration complete!');

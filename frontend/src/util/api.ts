@@ -2,6 +2,9 @@ import { didExpire, getToken, removeToken } from "./login";
 
 const BASE_URL = 'http://localhost:5008'
 
+// Re-export commonly used functions from login module
+export { getToken, removeToken }
+
 export interface UserProfile {
   id: number;
   name: string;

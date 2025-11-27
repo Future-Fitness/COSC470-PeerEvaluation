@@ -21,70 +21,87 @@ A collaborative peer review platform for educational settings, allowing teachers
 
 ## Getting Started
 
-### 1. Configuration
+### Quick Start (Recommended)
 
-**Important:** Set up your environment variables before running the application.
+**One command to start everything:**
+
+```bash
+# Clone this repository
+git clone <repository-url>
+cd COSC470-PeerEvaluation
+
+# Configure environment
+cp backend/.env.example backend/.env
+# Edit backend/.env with your credentials (see below)
+
+# Start everything with Docker
+./start.sh
+```
+
+This will:
+1. Stop any existing containers
+2. Build fresh images
+3. Start database (auto-seeds with test data)
+4. Start backend and frontend
+5. Show you the URLs to access
+
+**Access the application:**
+- Frontend: http://localhost:5009
+- Backend API: http://localhost:5008
+
+### Configuration
+
+**Important:** Set up your environment variables before running.
 
 ```bash
 # Copy the example environment file
 cp backend/.env.example backend/.env
 
 # Edit backend/.env with your actual credentials:
-# - Aiven MySQL database credentials
+# - MySQL database credentials (uses Docker MariaDB by default)
 # - Cloudinary API credentials (for file storage)
 # - Backend server port (default: 5008)
 ```
 
 **Required credentials:**
-- **Aiven MySQL**: Sign up at [aiven.io](https://aiven.io) for a free hosted MySQL instance
 - **Cloudinary**: Sign up at [cloudinary.com](https://cloudinary.com) for file storage (free tier available)
+- **Database**: Uses Docker MariaDB (no external setup needed)
 
 See `backend/.env.example` for all required variables.
 
-### 2. Using Docker
+### Manual Docker Commands
+
+If you prefer manual control:
 
 ```bash
-# Clone this repository
-git clone <repository-url>
-
-# Configure environment (see step 1 above)
-cp backend/.env.example backend/.env
-# Edit backend/.env with your credentials
-
 # Start all services
 docker-compose up --build
 
-# Frontend: http://localhost:5009
-# Backend API: http://localhost:5008
+# Stop all services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild specific service
+docker-compose up --build backend
 ```
 
-### 3. Manual Development Setup
+### Database Management
+
+The database automatically seeds with test data on first run. To reset:
 
 ```bash
-# Configure environment first (see step 1 above)
+# Stop and remove all data
+docker-compose down -v
 
-# Backend
-cd backend
-pnpm install
-pnpm start
-
-# Frontend (in separate terminal)
-cd frontend
-pnpm install
-pnpm dev
+# Start fresh (will re-seed)
+docker-compose up --build
 ```
 
-### 4. Database Setup
-
-```bash
-# Reset and populate database with test data
-cd backend
-node reset-db.js
-```
-
-This creates test accounts:
-- Student: `test@test.com` / `1234`
-- Teacher: `test2@test.com` / `1234`
+**Test Accounts:**
+- Student: Username `test` / Password `1234` (or use email `test@test.com` for OTP login)
+- Teacher: Username `test2` / Password `1234` (or use email `test2@test.com` for OTP login)
 
 ## Architecture Overview
 
@@ -115,7 +132,22 @@ This creates test accounts:
 
 ## Authentication Flow
 
-### Login Process
+### Login Methods
+
+The platform supports two authentication methods:
+
+1. **Password Login** (Traditional)
+   - Uses username + password with Basic Authentication
+   - Token stored in localStorage
+   - 20-minute inactivity timeout, 3-day absolute timeout
+
+2. **OTP Login** (Passwordless)
+   - Email-based one-time password
+   - 6-digit code sent via email
+   - Expires in 10 minutes
+   - Single-use only
+
+### Password Login Process
 
 ```
 ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
@@ -190,6 +222,8 @@ This creates test accounts:
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
 | GET | `/login` | Login with Basic Auth | No |
+| POST | `/request_otp` | Request OTP code via email | No |
+| POST | `/verify_otp` | Verify OTP and login | No |
 | GET | `/ping` | Health check | No |
 | GET | `/user_id` | Get current user ID | Yes |
 | GET | `/profile` | Get current user profile | Yes |
@@ -232,7 +266,22 @@ This creates test accounts:
 ### Data Import
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
-| POST | `/student_import` | Bulk import students CSV | Yes |
+| POST | `/student_import` | Bulk import students CSV (legacy) | Yes |
+| POST | `/upload_students_csv` | Upload CSV with multipart form data | Yes |
+
+**CSV Format for Student Upload:**
+```csv
+email,name,id
+john@example.com,John Doe,12345
+jane@example.com,Jane Smith,
+```
+- **email** (required): Student email address
+- **name** (optional): Student name (uses email prefix if not provided)
+- **id** (optional): Student ID (generates random 5-digit ID if not provided)
+- **Passwords**: Auto-generated 10-character secure passwords
+- Creates accounts for new students
+- Sends welcome emails with auto-generated credentials
+- Enrolls students in specified course
 
 ## Database Schema
 
@@ -283,6 +332,12 @@ User ──────┬────── User_Course ────── Cour
 
 **Criterion**
 - id, reviewID, criterionRowID, grade, comments
+
+**OTP** (One-Time Password)
+- id, email, otp_code, created_at, expires_at, is_used
+- Stores email-based login codes
+- Auto-expires after 10 minutes
+- Single-use only (is_used flag)
 
 ## Frontend Structure
 
@@ -368,19 +423,65 @@ DANGEROUS_DISABLE_ALL_AUTH=true  # Testing only
 
 ## Important Notes
 
-- Database schema is in `schema.sql`
-- Backend hot-reload requires container rebuild
-- Frontend hot-reloads automatically
-- Default test password for imported students: `letmein`
+- Database auto-seeds on first Docker run via `schema.sql`
+- Frontend and backend hot-reload automatically in Docker
+- Use `./start.sh` for easiest setup
+- Use `docker-compose down -v` to reset database
+
+## Quick Commands
+
+```bash
+# Start everything
+./start.sh
+
+# View logs
+docker-compose logs -f
+
+# Stop everything
+docker-compose down
+
+# Reset database
+docker-compose down -v && docker-compose up --build
+```
 
 ## Test Accounts
 
-| Username | Password | Role |
-|----------|----------|------|
-| test | 1234 | Student |
-| test2 | 1234 | Teacher |
-| alice | password123 | Student |
-| professor | password123 | Teacher |
+### 🔐 Two Login Methods Available:
+
+#### **Method 1: Password Login**
+Use the **🔑 Password** tab with username + password:
+
+| Username | Password | Email | Role |
+|----------|----------|-------|------|
+| test | 1234 | test@test.com | Student |
+| test2 | 1234 | test2@test.com | Teacher ⭐ |
+| alice | password | alice@example.com | Student |
+| professor | password | prof@example.com | Teacher ⭐ |
+
+#### **Method 2: OTP Login (Email Code)**
+Use the **📧 Email Code** tab with any email above:
+
+1. Click **📧 Email Code** tab
+2. Enter email (e.g., `test@test.com`)
+3. Click **Send Login Code**
+4. Check your email for 6-digit code
+5. Enter code and verify
+
+**Note:** OTP codes expire in 10 minutes and can only be used once.
+
+### 🎯 Quick Test:
+```bash
+# Open browser
+open http://localhost:5009
+
+# Try Password Login
+Username: test
+Password: 1234
+
+# Or Try OTP Login
+Email: test@test.com
+(Check email for code)
+```
 
 ## License
 
