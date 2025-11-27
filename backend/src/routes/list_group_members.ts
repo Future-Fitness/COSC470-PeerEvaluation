@@ -26,14 +26,21 @@ export default async function (app: FastifyInstance) {
             console.log(`Found ${members.length} members in group ${gID}`);
             
             // Transform the data to match frontend expectations
-            const groupMembers = members.map((member: any) => ({
-                id: member.User.id,
-                name: member.User.name,
-                email: member.User.email,
-                userID: member.userID,
-                groupID: member.groupID,
-                assignmentID: member.assignmentID
-            }));
+            const groupMembers = members.map((member: any) => {
+                if (member.User) {
+                    return {
+                        id: member.User.id,
+                        name: member.User.name,
+                        email: member.User.email,
+                        userID: member.userID,
+                        groupID: member.groupID,
+                        assignmentID: member.assignmentID
+                    };
+                } else {
+                    console.error('User object is undefined for member:', member);
+                    return null; // or handle this case as needed
+                }
+            }).filter(Boolean); // Remove null values
             
             resp.send(groupMembers);
         } catch (error) {
