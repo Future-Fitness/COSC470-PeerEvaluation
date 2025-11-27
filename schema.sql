@@ -97,18 +97,10 @@ VALUES
     -- 1 Student
     (2, 'student1', 'jaddpi1@gmail.com', FALSE, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db');
 
-INSERT INTO Assignment(id, courseID, name, rubric)
-    VALUES(1,1,"test","test-rubric");
-
 -- Insert dummy Courses
 INSERT INTO Course (teacherID, name)
 VALUES
     (1, 'Introduction to Computer Science');
-
--- Insert dummy Assignments
-INSERT INTO Assignment (courseID, name, rubric)
-VALUES
-    (1, 'Assignment 2', 'Basic Programming Concepts');
 
 -- Insert dummy CourseGroups
 INSERT INTO CourseGroup (name, assignmentID)
