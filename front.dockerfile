@@ -1,25 +1,30 @@
 FROM node:20-slim
 
+# Install pnpm
+RUN npm install -g pnpm
+
 WORKDIR /app
 
-# Copy package files
-COPY frontend/package.json frontend/package-lock.json* ./
+# Copy workspace configs to the root
+COPY pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
 
-# Clear npm cache and install dependencies
-RUN npm cache clean --force && \
-    npm install
+# Create the frontend directory and copy its package definition
+# This mimics the monorepo structure for pnpm
+RUN mkdir -p frontend
+COPY frontend/package.json ./frontend/
 
-# Copy source files (excluding node_modules)
-COPY frontend/src ./src
-COPY frontend/public ./public
-COPY frontend/index.html ./
-COPY frontend/vite.config.ts ./
-COPY frontend/tsconfig*.json ./
-COPY frontend/tailwind.config.js ./
-COPY frontend/postcss.config.js ./
+# Install dependencies for only the frontend workspace
+RUN pnpm install --filter frontend
 
-# Expose port
+# Copy the rest of the frontend source code
+# This includes vite.config.js, tailwind.config.js, etc.
+COPY frontend/ ./frontend/
+
+# Set the final working directory
+WORKDIR /app/frontend
+
 EXPOSE 5009
 
-# Start development server
-CMD ["npm", "run", "dev"]
+# Run the development server
+CMD ["pnpm", "run", "dev"]

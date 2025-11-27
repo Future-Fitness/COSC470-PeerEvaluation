@@ -30,7 +30,7 @@ app.addHook('onRequest', async (request, reply) => {
   }
 })
 
-app.register(fp(authentication), { noAuthRoutes: ['/login', '/ping'] })
+app.register(fp(authentication), { noAuthRoutes: ['/login', '/ping', '/request_otp', '/verify_otp'] })
 app.decorate('session', {})
 
 ;(async () => {

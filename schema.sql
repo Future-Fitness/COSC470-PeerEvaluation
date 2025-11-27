@@ -9,6 +9,17 @@ CREATE TABLE User (
     is_teacher BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+CREATE TABLE OTP (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    otp_code VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    is_used BOOLEAN DEFAULT FALSE,
+    INDEX idx_email (email),
+    INDEX idx_expires_at (expires_at)
+);
+
 CREATE TABLE Course (
     id SERIAL PRIMARY KEY,
     teacherID INT NOT NULL,

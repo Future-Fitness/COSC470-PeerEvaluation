@@ -53,7 +53,6 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
       const response = await fetch('http://localhost:5008/upload_students_csv', {
         method: 'POST',
         body: formData,
-        credentials: 'include',
       });
 
       if (!response.ok) {

@@ -171,12 +171,20 @@ class EmailService {
             </center>
 
             <div class="info-box">
-              <h3>Getting Started</h3>
+              <h3>Two Ways to Login</h3>
+              <p><strong>Option 1: Password Login</strong></p>
               <ol>
-                <li>Click the "Login to Your Account" button above</li>
-                <li>Enter your email and temporary password</li>
-                <li>Change your password in your profile settings</li>
-                <li>Start participating in peer evaluations</li>
+                <li>Click "🔑 Password" tab</li>
+                <li>Use the username from your email (before @)</li>
+                <li>Enter your temporary password above</li>
+              </ol>
+
+              <p><strong>Option 2: Email Code (Recommended)</strong></p>
+              <ol>
+                <li>Click "📧 Email Code" tab</li>
+                <li>Enter your email: <strong>${email}</strong></li>
+                <li>Check your inbox for a 6-digit code</li>
+                <li>Enter the code to login securely</li>
               </ol>
             </div>
 
@@ -217,6 +225,112 @@ class EmailService {
     }
 
     return results;
+  }
+
+  async sendOTPEmail(email: string, otp: string): Promise<boolean> {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              color: #333;
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+            }
+            .header {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              padding: 30px;
+              border-radius: 8px 8px 0 0;
+              text-align: center;
+            }
+            .content {
+              background: #f9fafb;
+              padding: 30px;
+              border: 1px solid #e5e7eb;
+              border-top: none;
+            }
+            .otp-box {
+              background: white;
+              padding: 30px;
+              border-radius: 8px;
+              margin: 20px 0;
+              border: 2px solid #667eea;
+              text-align: center;
+            }
+            .otp-code {
+              font-family: 'Courier New', monospace;
+              font-size: 36px;
+              font-weight: bold;
+              color: #667eea;
+              letter-spacing: 8px;
+              padding: 20px;
+              background: #f3f4f6;
+              border-radius: 8px;
+              display: inline-block;
+              margin: 10px 0;
+            }
+            .warning {
+              background: #fef3c7;
+              border-left: 4px solid #f59e0b;
+              padding: 15px;
+              margin: 15px 0;
+              border-radius: 4px;
+            }
+            .footer {
+              text-align: center;
+              color: #6b7280;
+              font-size: 12px;
+              margin-top: 30px;
+              padding-top: 20px;
+              border-top: 1px solid #e5e7eb;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>🔐 Your Login Code</h1>
+          </div>
+          <div class="content">
+            <p>Hello,</p>
+
+            <p>You requested to log in to the Peer Evaluation System. Use the code below to complete your login:</p>
+
+            <div class="otp-box">
+              <p style="margin: 0 0 10px 0; font-size: 14px; color: #6b7280;">Your One-Time Password (OTP)</p>
+              <div class="otp-code">${otp}</div>
+              <p style="margin: 10px 0 0 0; font-size: 12px; color: #6b7280;">This code will expire in 10 minutes</p>
+            </div>
+
+            <div class="warning">
+              <strong>⚠️ Security Notice:</strong> If you didn't request this code, please ignore this email. Never share this code with anyone.
+            </div>
+
+            <p>For your security:</p>
+            <ul>
+              <li>This code can only be used once</li>
+              <li>It will expire in 10 minutes</li>
+              <li>Do not share this code with anyone</li>
+            </ul>
+
+            <div class="footer">
+              <p>This is an automated message. Please do not reply to this email.</p>
+              <p>&copy; ${new Date().getFullYear()} Peer Evaluation System. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    return this.sendEmail({
+      to: email,
+      subject: 'Your Login Code - Peer Evaluation System',
+      html,
+    });
   }
 }
 

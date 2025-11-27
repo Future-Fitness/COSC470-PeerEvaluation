@@ -94,7 +94,10 @@ export default function (app: FastifyInstance) {
           
           if (!user) {
             // Create new user
-            const studentId = studentData.id ? parseInt(studentData.id) : undefined;
+            // Generate random ID if not provided (5-digit random number)
+            // Handle empty strings and null values
+            const hasId = studentData.id && studentData.id.toString().trim() !== '';
+            const studentId = hasId ? parseInt(studentData.id) : Math.floor(10000 + Math.random() * 90000);
             const name = studentData.name?.trim() || email.split('@')[0];
             const password = studentData.password?.trim() || defaultStudentPassword;
             userPassword = password;
@@ -107,6 +110,8 @@ export default function (app: FastifyInstance) {
               is_teacher: false,
               hash_pass: sha512(password),
             });
+
+            console.log(`Created new user: ${email} with ID: ${studentId}`);
           } else if (user.is_teacher) {
             results.errors.push({
               email,

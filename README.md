@@ -100,8 +100,8 @@ docker-compose up --build
 ```
 
 **Test Accounts:**
-- Student: `test@test.com` / `1234`
-- Teacher: `test2@test.com` / `1234`
+- Student: Username `test` / Password `1234` (or use email `test@test.com` for OTP login)
+- Teacher: Username `test2` / Password `1234` (or use email `test2@test.com` for OTP login)
 
 ## Architecture Overview
 
@@ -132,7 +132,22 @@ docker-compose up --build
 
 ## Authentication Flow
 
-### Login Process
+### Login Methods
+
+The platform supports two authentication methods:
+
+1. **Password Login** (Traditional)
+   - Uses username + password with Basic Authentication
+   - Token stored in localStorage
+   - 20-minute inactivity timeout, 3-day absolute timeout
+
+2. **OTP Login** (Passwordless)
+   - Email-based one-time password
+   - 6-digit code sent via email
+   - Expires in 10 minutes
+   - Single-use only
+
+### Password Login Process
 
 ```
 ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
@@ -207,6 +222,8 @@ docker-compose up --build
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
 | GET | `/login` | Login with Basic Auth | No |
+| POST | `/request_otp` | Request OTP code via email | No |
+| POST | `/verify_otp` | Verify OTP and login | No |
 | GET | `/ping` | Health check | No |
 | GET | `/user_id` | Get current user ID | Yes |
 | GET | `/profile` | Get current user profile | Yes |
@@ -249,7 +266,22 @@ docker-compose up --build
 ### Data Import
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
-| POST | `/student_import` | Bulk import students CSV | Yes |
+| POST | `/student_import` | Bulk import students CSV (legacy) | Yes |
+| POST | `/upload_students_csv` | Upload CSV with multipart form data | Yes |
+
+**CSV Format for Student Upload:**
+```csv
+email,name,id
+john@example.com,John Doe,12345
+jane@example.com,Jane Smith,
+```
+- **email** (required): Student email address
+- **name** (optional): Student name (uses email prefix if not provided)
+- **id** (optional): Student ID (generates random 5-digit ID if not provided)
+- **Passwords**: Auto-generated 10-character secure passwords
+- Creates accounts for new students
+- Sends welcome emails with auto-generated credentials
+- Enrolls students in specified course
 
 ## Database Schema
 
@@ -300,6 +332,12 @@ User ──────┬────── User_Course ────── Cour
 
 **Criterion**
 - id, reviewID, criterionRowID, grade, comments
+
+**OTP** (One-Time Password)
+- id, email, otp_code, created_at, expires_at, is_used
+- Stores email-based login codes
+- Auto-expires after 10 minutes
+- Single-use only (is_used flag)
 
 ## Frontend Structure
 
@@ -408,12 +446,42 @@ docker-compose down -v && docker-compose up --build
 
 ## Test Accounts
 
-| Username | Password | Role |
-|----------|----------|------|
-| test | 1234 | Student |
-| test2 | 1234 | Teacher |
-| alice | password123 | Student |
-| professor | password123 | Teacher |
+### 🔐 Two Login Methods Available:
+
+#### **Method 1: Password Login**
+Use the **🔑 Password** tab with username + password:
+
+| Username | Password | Email | Role |
+|----------|----------|-------|------|
+| test | 1234 | test@test.com | Student |
+| test2 | 1234 | test2@test.com | Teacher ⭐ |
+| alice | password | alice@example.com | Student |
+| professor | password | prof@example.com | Teacher ⭐ |
+
+#### **Method 2: OTP Login (Email Code)**
+Use the **📧 Email Code** tab with any email above:
+
+1. Click **📧 Email Code** tab
+2. Enter email (e.g., `test@test.com`)
+3. Click **Send Login Code**
+4. Check your email for 6-digit code
+5. Enter code and verify
+
+**Note:** OTP codes expire in 10 minutes and can only be used once.
+
+### 🎯 Quick Test:
+```bash
+# Open browser
+open http://localhost:5009
+
+# Try Password Login
+Username: test
+Password: 1234
+
+# Or Try OTP Login
+Email: test@test.com
+(Check email for code)
+```
 
 ## License
 
