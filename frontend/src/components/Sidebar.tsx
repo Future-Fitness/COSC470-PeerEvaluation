@@ -1,4 +1,4 @@
-import { Home, User, LogOut, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, User, LogOut, Moon, Sun, ChevronLeft, ChevronRight, Users } from 'lucide-react';
 import { logout } from '../util/login';
 import { useTheme } from '../context/ThemeContext';
 
@@ -43,6 +43,15 @@ export default function Sidebar() {
           collapsed={isSidebarCollapsed}
         >
           Home
+        </SidebarRow>
+
+        <SidebarRow
+          selected={location === '/students'}
+          href="/students"
+          icon={<Users className="w-5 h-5" />}
+          collapsed={isSidebarCollapsed}
+        >
+          All Students
         </SidebarRow>
 
         <SidebarRow

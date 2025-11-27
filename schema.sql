@@ -93,123 +93,81 @@ CREATE TABLE Criteria_Description (
 INSERT INTO User (id, name, email, is_teacher, hash_pass)
   VALUES (1, 'test', 'test@test.com', false, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
          (2, 'test2', 'test2@test.com', true, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
-         (3, 'alice', 'alice@example.com', false, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf'),
+         (3, 'harsh2', 'canadaharsh2002@gmail.com', false, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf'),
          (4, 'professor', 'prof@example.com', true, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf');
 INSERT INTO Assignment(id, courseID, name, rubric)
     VALUES(1,1,"test","test-rubric");
 
 -- Insert dummy Users (Students and Teachers)
--- actually make them hashed passwords, these wont login the dummy users (itll de-hash "hashedpassword2" instead of husidhgjashkjyh;y23421g)
+-- Teachers and Students with proper hash passwords (password: 1234)
 INSERT INTO User (name, email, hash_pass, is_teacher)
 VALUES 
-
-    ('JDoe', 'john.doe@example.com', '639675e26fc7399c0a1d61ee59eebfd5dab73fad055999f83105790758713af02ea6cb1afbc1be9f6f3ca2ea48327026218383713c8e0e18530b52c9dc147a1b', FALSE),
-    ('Jane Smith', 'jane.smith@example.com', 'hashedpassword2', FALSE),
-    ('Robert Brown', 'robert.brown@example.com', 'hashedpassword3', FALSE),
-    ('Mary Johnson', 'mary.johnson@example.com', 'hashedpassword4', FALSE),
-    ('William Harris', 'william.harris@example.com', 'hashedpassword5', TRUE),
-    ('Emily White', 'emily.white@example.com', 'hashedpassword6', FALSE),
-    ('James Clark', 'james.clark@example.com', 'hashedpassword7', FALSE),
-    ('Linda Lewis', 'linda.lewis@example.com', 'hashedpassword8', TRUE),
-    ('Michael Walker', 'michael.walker@example.com', 'hashedpassword9', FALSE),
-    ('Sarah Hall', 'sarah.hall@example.com', 'hashedpassword10', FALSE);
+    -- 2 Teachers
+    ('Indian Shah', 'indianshahishere@gmail.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', TRUE),
+    ('Linda Lewis', 'linda.lewis@example.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', TRUE),
+    -- 1 Student
+    ('John Doe', 'john.doe@example.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', FALSE);
 
 -- Insert dummy Courses
 INSERT INTO Course (teacherID, name)
 VALUES
     (5, 'Introduction to Computer Science'),
     (5, 'Data Structures'),
-    (6, 'Databases 101'),
-    (6, 'Software Engineering'),
-    (5, 'Computer Networks');
+    (6, 'Databases 101');
 
 -- Insert dummy Assignments
 INSERT INTO Assignment (courseID, name, rubric)
 VALUES
     (1, 'Assignment 1', 'Basic Programming Concepts'),
-    (1, 'Assignment 2', 'OOP Principles'),
     (2, 'Assignment 1', 'Arrays and Linked Lists'),
-    (2, 'Assignment 2', 'Stacks and Queues'),
-    (3, 'Assignment 1', 'SQL Basics'),
-    (3, 'Assignment 2', 'Advanced Queries'),
-    (4, 'Assignment 1', 'Software Design Patterns'),
-    (4, 'Assignment 2', 'Agile Methodology'),
-    (5, 'Assignment 1', 'TCP/IP Basics'),
-    (5, 'Assignment 2', 'Routing Protocols');
+    (3, 'Assignment 1', 'SQL Basics');
 
 -- Insert dummy CourseGroups
 INSERT INTO CourseGroup (name, assignmentID)
 VALUES
     ('Group A', 1),
-    ('Group B', 1),
     ('Group B', 2),
-    ('Group C', 3),
-    ('Group D', 4),
-    ('Group E', 5);
+    ('Group C', 3);
 
 -- Insert dummy Submissions
 INSERT INTO Submission (path, studentID, assignmentID)
 VALUES
-    ('/submissions/john_doe/assignment1.pdf', 1, 1),
-    ('/submissions/jane_smith/assignment2.pdf', 2, 2),
-    ('/submissions/robert_brown/assignment1.pdf', 3, 3),
-    ('/submissions/mary_johnson/assignment2.pdf', 4, 4),
-    ('/submissions/william_harris/assignment1.pdf', 5, 5);
+    ('/submissions/john_doe/assignment1.pdf', 7, 1);
 
 -- Insert dummy Group_Members
 INSERT INTO Group_Members (groupID, userID, assignmentID)
 VALUES
-    (1, 1, 1),
-    (1, 2, 1),
-    (1, 3, 1),
-    (2, 4, 1),
-    (2, 5, 1);
+    (1, 7, 1);
 
 
 -- Insert dummy User_Courses
 INSERT INTO User_Courses (courseID, userID)
 VALUES
-    (1, 1),
-    (1, 2),
-    (1, 3),
-    (1, 4),
-    (1, 5);
+    (1, 7);
 
 -- Insert dummy Reviews
 INSERT INTO Review (assignmentID, reviewerID, revieweeID)
 VALUES
-    (1, 1, 2),
-    (2, 3, 4),
-    (3, 5, 1),
-    (4, 2, 3),
-    (5, 4, 5); 
+    (1, 7, 7); 
 
 -- Insert dummy Criteria
 INSERT INTO Criterion (reviewID, grade, comments)
 VALUES
-    (1, 85, 'Good job!'),
-    (2, 90, 'Excellent work!'),
-    (3, 75, 'Needs improvement'),
-    (4, 88, 'Well done!'),
-    (5, 92, 'Great submission!');
+    (1, 85, 'Good job!');
  
 -- Insert dummy Rubrics
 INSERT INTO Rubric (assignmentID)
 VALUES
     (1),
     (2),
-    (3),
-    (4),
-    (5); 
+    (3); 
 
 -- Insert dummy Criteria_Description
 INSERT INTO Criteria_Description (scoreMax, hasScore)
 VALUES
     (100, TRUE),
     (100, TRUE),
-    (100, FALSE),
-    (100, TRUE),
-    (100, TRUE); 
+    (100, FALSE); 
 -- -- Add foreign key constraints
 -- ALTER TABLE Assignment
 --     ADD CONSTRAINT fk_assignment_course

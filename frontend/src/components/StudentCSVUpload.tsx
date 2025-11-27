@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, X, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Upload, FileText, X, AlertCircle, CheckCircle2, Loader2, Mail } from 'lucide-react';
 import Button from './Button';
 import toast from 'react-hot-toast';
+import { getToken, maybeHandleExpire } from '../util/api';
 
 interface StudentCSVUploadProps {
   courseId: number;
@@ -13,10 +14,12 @@ interface UploadResult {
   addedCount: number;
   alreadyEnrolledCount: number;
   errorCount: number;
+  newUsersCount: number;
   results: {
     added: string[];
     alreadyEnrolled: string[];
     errors: { email: string; error: string }[];
+    newUsers: { email: string; password: string }[];
   };
 }
 
@@ -38,32 +41,81 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault(); // Prevent form submission
+      e.stopPropagation();
+    }
+    
     if (!file) {
       toast.error('Please select a file');
       return;
     }
 
+    console.log('Starting CSV upload...');
     setUploading(true);
+    setResult(null); // Clear previous results
+    
     const formData = new FormData();
     formData.append('file', file);
     formData.append('courseId', courseId.toString());
+    
+    console.log('FormData prepared:', {
+      file: file.name,
+      courseId: courseId.toString(),
+      fileSize: file.size
+    });
 
     try {
+      const token = getToken();
+      if (!token) {
+        toast.error('Please log in to upload students');
+        setUploading(false);
+        return;
+      }
+
+      console.log('Making API request to upload CSV...');
       const response = await fetch('http://localhost:5008/upload_students_csv', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
+      console.log('API response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      if (response.status === 401) {
+        console.log('Authentication failed');
+        maybeHandleExpire(response);
+        toast.error('Session expired. Please log in again.');
+        setUploading(false);
+        return;
+      }
+
       if (!response.ok) {
-        const error = await response.json();
+        console.log('API request failed with status:', response.status);
+        const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('API error response:', error);
         throw new Error(error.error || 'Upload failed');
       }
 
+      console.log('Processing successful API response...');
       const data = await response.json();
-      setResult(data);
-      toast.success(`Added ${data.addedCount} student(s) to class`);
+      console.log('API response data:', data);
       
+      setResult(data);
+      
+      let successMessage = `Added ${data.addedCount} student(s) to class`;
+      if (data.newUsersCount > 0) {
+        successMessage += `. ${data.newUsersCount} new account(s) created and email notifications sent.`;
+      }
+      toast.success(successMessage);
+
       if (data.addedCount > 0) {
         onUploadComplete();
       }
@@ -71,6 +123,7 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
       console.error('Error uploading CSV:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to upload CSV');
     } finally {
+      console.log('Upload process completed, setting uploading to false');
       setUploading(false);
     }
   };
@@ -90,7 +143,18 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+      <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700 relative ${uploading ? 'pointer-events-none' : ''}`}>
+        {uploading && (
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-3">
+              <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
+              <div>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">Uploading Students...</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Processing CSV file and creating accounts</p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -115,20 +179,27 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
             </p>
             <ul className="text-sm text-blue-800 dark:text-blue-300 list-disc list-inside space-y-1">
               <li><strong>email</strong> (required) - Student's email address</li>
-              <li><strong>name</strong> (optional) - Student's full name</li>
-              <li><strong>id</strong> (optional) - Student ID number</li>
-              <li><strong>password</strong> (optional) - Initial password (defaults to "letmein")</li>
+              <li><strong>name</strong> (optional) - Student's full name (defaults to email prefix)</li>
             </ul>
+            <p className="text-sm text-blue-800 dark:text-blue-300 mt-2">
+              New students will receive a welcome email with a randomly generated temporary password.
+            </p>
             <div className="mt-3 bg-white dark:bg-gray-900 rounded p-2 text-xs font-mono">
-              <div>email,name,id,password</div>
-              <div>john@example.com,John Doe,12345,mypassword</div>
-              <div>jane@example.com,Jane Smith,12346</div>
+              <div>email,name</div>
+              <div>john@example.com,John Doe</div>
+              <div>jane@example.com,Jane Smith</div>
             </div>
           </div>
 
           {/* File Upload */}
           {!result && (
-            <div className="space-y-4">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpload(e);
+              }}
+              className="space-y-4"
+            >
               <label className="block">
                 <input
                   ref={fileInputRef}
@@ -170,10 +241,10 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
               </label>
 
               <div className="flex gap-3">
-                <Button
-                  onClick={handleUpload}
+                <button
+                  type="submit"
                   disabled={!file || uploading}
-                  className="flex-1 flex items-center justify-center gap-2"
+                  className="flex-1 flex items-center justify-center gap-2 appearance-none border-none rounded p-3 font-bold text-base transition-all duration-150 bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700 cursor-pointer disabled:bg-slate-400 disabled:cursor-not-allowed"
                 >
                   {uploading ? (
                     <>
@@ -186,7 +257,7 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
                       Upload Students
                     </>
                   )}
-                </Button>
+                </button>
                 {file && !uploading && (
                   <Button
                     onClick={handleReset}
@@ -196,14 +267,14 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
                   </Button>
                 )}
               </div>
-            </div>
+            </form>
           )}
 
           {/* Results */}
           {result && (
             <div className="space-y-4">
               {/* Summary */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center">
                   <CheckCircle2 className="w-8 h-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
                   <p className="text-2xl font-bold text-green-700 dark:text-green-400">
@@ -217,6 +288,13 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
                     {result.alreadyEnrolledCount}
                   </p>
                   <p className="text-sm text-blue-600 dark:text-blue-500">Already Enrolled</p>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 text-center">
+                  <Mail className="w-8 h-8 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-purple-700 dark:text-purple-400">
+                    {result.newUsersCount || 0}
+                  </p>
+                  <p className="text-sm text-purple-600 dark:text-purple-500">New Accounts</p>
                 </div>
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-center">
                   <X className="w-8 h-8 text-red-600 dark:text-red-400 mx-auto mb-2" />
@@ -237,6 +315,24 @@ export default function StudentCSVUpload({ courseId, onUploadComplete, onClose }
                     {result.results.added.map((email, idx) => (
                       <p key={idx} className="text-sm text-green-800 dark:text-green-300">
                         • {email}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {result.results.newUsers && result.results.newUsers.length > 0 && (
+                <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                  <h4 className="font-semibold text-purple-900 dark:text-purple-200 mb-2">
+                    New Accounts Created ({result.results.newUsers.length})
+                  </h4>
+                  <p className="text-sm text-purple-700 dark:text-purple-300 mb-3">
+                    Email notifications sent with login credentials
+                  </p>
+                  <div className="max-h-32 overflow-y-auto space-y-1">
+                    {result.results.newUsers.map((user, idx) => (
+                      <p key={idx} className="text-sm text-purple-800 dark:text-purple-300">
+                        • {user.email}
                       </p>
                     ))}
                   </div>

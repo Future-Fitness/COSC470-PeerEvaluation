@@ -216,7 +216,13 @@ class EmailService {
     };
 
     for (const student of students) {
+
+      console.log('🚀 ~ :220 ~ EmailService ~ sendBulkNewStudentEmails ~ student::==', student)
+
       const success = await this.sendNewStudentEmail(student);
+
+      console.log('🚀 ~ :224 ~ EmailService ~ sendBulkNewStudentEmails ~ success::==', success)
+
       if (success) {
         results.sent.push(student.email);
       } else {

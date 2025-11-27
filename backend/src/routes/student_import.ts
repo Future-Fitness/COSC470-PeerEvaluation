@@ -32,30 +32,33 @@ export default function (app: FastifyInstance) {
 
     try {
       const parsed = csv2json(data.students) as {
-        id: number,
         name: string,
         email: string,
-        password?: string,
       }[];
 
       // Insert the students
       const students = await Promise.all(parsed.map(async student => {
+        const email = student.email;
+        const name = student.name;
+
+        // All fields are auto-generated except email and name
+        const defaults: any = {
+          name: name,
+          email: email,
+          is_teacher: false,
+          hash_pass: sha512(defaultStudentPassword),
+        };
+
         const [user] = await User.findOrCreate({
           where: {
-            id: student.id
+            email: email
           },
-          defaults: {
-            id: student.id,
-            name: student.name,
-            email: student.email,
-            is_teacher: false,
-            hash_pass: sha512(student.password || defaultStudentPassword),
-          }
+          defaults: defaults
         });
 
         return user;
       }));
-      
+
       // Add every user to the course
       await Promise.all(students.map(async student => {
         await User_Course.create({
