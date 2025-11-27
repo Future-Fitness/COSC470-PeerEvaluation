@@ -1,5 +1,4 @@
-import { describe, test, expect, beforeEach, jest } from '@jest/globals';
-import { app } from '../src/app';
+import { describe, beforeEach, jest } from '@jest/globals';
 
 jest.mock('../src/util/database', () => {
   return {
@@ -8,9 +7,6 @@ jest.mock('../src/util/database', () => {
     },
   };
 });
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { Group_Member } = require('../src/util/database');
 
 describe('/list_ua_groups/:assignmentID', () => {
   beforeEach(() => {
