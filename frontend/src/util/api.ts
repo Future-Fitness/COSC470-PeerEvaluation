@@ -640,6 +640,24 @@ export const getMySubmission = async (assignmentID: number): Promise<Submission 
   return await resp.json();
 }
 
+export const getAssignmentSubmissions = async (assignmentID: number): Promise<SubmissionsWithUser[]> => {
+  const resp = await fetch(`${BASE_URL}/submissions/${assignmentID}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  maybeHandleExpire(resp);
+
+  if (!resp.ok) {
+    throw new Error(`Response status: ${resp.status}`);
+  }
+
+  return await resp.json();
+}
+
 export const getAssignmentById = async (assignmentID: number): Promise<Assignment> => {
   const resp = await fetch(`${BASE_URL}/assignments/${assignmentID}/details`, { // Assuming a dedicated endpoint for single assignment details
     method: 'GET',

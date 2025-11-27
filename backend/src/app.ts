@@ -38,11 +38,14 @@ console.log('Starting route registration...');
 const files = fs.readdirSync(path.join(__dirname, 'routes'));
 console.log(`Found ${files.length} route files`);
 
-files.forEach(file => {
+export const routesRegistered: string[] = [];
+
+files.forEach(async file => {
   const name = file.replace('.ts', '');
   console.log(`Registering route: ${name}`);
-  const route = require(`./routes/${name}`);
+  const route = await import(`./routes/${name}`);
   route.default(app);
+  routesRegistered.push(name);
 });
 
 console.log('Route registration complete!');

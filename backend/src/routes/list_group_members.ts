@@ -3,16 +3,42 @@ import models from '../util/database';
 
 export default async function (app: FastifyInstance) {
     const GroupMembers = models.Group_Member;
-    //const CourseGroup = models.CourseGroup;
+    const User = models.User;
+    
     app.get<{ Params: { assignmentID: number, groupID: string } }>('/list_group_members/:assignmentID/:groupID', async (req, resp) => {
-        const aID = req.params.assignmentID;
-        const gID = req.params.groupID;
-        const members = await GroupMembers.findAll({
-            where: {
-                groupID: gID,
-                assignmentID: aID
-            }
-        });
-        resp.send(members);
+        try {
+            const aID = req.params.assignmentID;
+            const gID = req.params.groupID;
+            console.log(`Fetching members for group ${gID} in assignment ${aID}`);
+            
+            const members = await GroupMembers.findAll({
+                where: {
+                    groupID: gID,
+                    assignmentID: aID
+                },
+                include: [{
+                    model: User,
+                    attributes: ['id', 'name', 'email'],
+                    required: true
+                }]
+            });
+            
+            console.log(`Found ${members.length} members in group ${gID}`);
+            
+            // Transform the data to match frontend expectations
+            const groupMembers = members.map((member: any) => ({
+                id: member.User.id,
+                name: member.User.name,
+                email: member.User.email,
+                userID: member.userID,
+                groupID: member.groupID,
+                assignmentID: member.assignmentID
+            }));
+            
+            resp.send(groupMembers);
+        } catch (error) {
+            console.error('Error fetching group members:', error);
+            resp.status(500).send({ error: 'Failed to fetch group members' });
+        }
     });
 }
