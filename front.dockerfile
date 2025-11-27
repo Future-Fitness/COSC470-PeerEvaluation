@@ -1,23 +1,25 @@
 FROM node:20-slim
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-ENV SHELL="/bin/bash"
-
 WORKDIR /app
 
-RUN npm i -g corepack@latest
-RUN corepack enable pnpm
+# Copy package files
+COPY frontend/package.json frontend/package-lock.json* ./
 
-COPY frontend/package.json ./package.json
-COPY frontend/tsconfig.json ./tsconfig.json
-COPY frontend/tsconfig.app.json ./tsconfig.app.json
-COPY frontend/tsconfig.node.json ./tsconfig.node.json
-COPY frontend/vite.config.ts ./vite.config.ts
-COPY frontend/index.html ./index.html
+# Clear npm cache and install dependencies
+RUN npm cache clean --force && \
+    npm install
 
-RUN pnpm setup
-RUN pnpm install
+# Copy source files (excluding node_modules)
+COPY frontend/src ./src
+COPY frontend/public ./public
+COPY frontend/index.html ./
+COPY frontend/vite.config.ts ./
+COPY frontend/tsconfig*.json ./
+COPY frontend/tailwind.config.js ./
+COPY frontend/postcss.config.js ./
 
-EXPOSE 3000
-CMD ["pnpm", "dev"]
+# Expose port
+EXPOSE 5009
+
+# Start development server
+CMD ["npm", "run", "dev"]

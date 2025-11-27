@@ -1,25 +1,20 @@
 FROM node:20-slim
 
-# Postgres variables
-ENV MYSQL_HOST=mariadb
-ENV MYSQL_PORT=3306
-ENV MYSQL_USER=root
-ENV MYSQL_PASS=root
-ENV MYSQL_DB=cosc471
-
 WORKDIR /app
 
-# Install and run PNPM
-RUN npm i -g corepack@latest
-RUN corepack enable pnpm
+# Copy configuration files
+COPY backend/package.json ./
+COPY pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
 
-COPY backend/package.json ./package.json
+# Install pnpm and dependencies
+RUN npm install -g pnpm && pnpm install
 
-RUN pnpm install
+# Copy application files
+COPY backend/ ./
 
-COPY backend/src ./src
-COPY backend/tsconfig.json ./tsconfig.json
+# Expose port
+EXPOSE 5008
 
-EXPOSE 5000
-
+# Start server
 CMD ["pnpm", "start"]

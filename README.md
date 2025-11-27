@@ -21,68 +21,85 @@ A collaborative peer review platform for educational settings, allowing teachers
 
 ## Getting Started
 
-### 1. Configuration
+### Quick Start (Recommended)
 
-**Important:** Set up your environment variables before running the application.
+**One command to start everything:**
+
+```bash
+# Clone this repository
+git clone <repository-url>
+cd COSC470-PeerEvaluation
+
+# Configure environment
+cp backend/.env.example backend/.env
+# Edit backend/.env with your credentials (see below)
+
+# Start everything with Docker
+./start.sh
+```
+
+This will:
+1. Stop any existing containers
+2. Build fresh images
+3. Start database (auto-seeds with test data)
+4. Start backend and frontend
+5. Show you the URLs to access
+
+**Access the application:**
+- Frontend: http://localhost:5009
+- Backend API: http://localhost:5008
+
+### Configuration
+
+**Important:** Set up your environment variables before running.
 
 ```bash
 # Copy the example environment file
 cp backend/.env.example backend/.env
 
 # Edit backend/.env with your actual credentials:
-# - Aiven MySQL database credentials
+# - MySQL database credentials (uses Docker MariaDB by default)
 # - Cloudinary API credentials (for file storage)
 # - Backend server port (default: 5008)
 ```
 
 **Required credentials:**
-- **Aiven MySQL**: Sign up at [aiven.io](https://aiven.io) for a free hosted MySQL instance
 - **Cloudinary**: Sign up at [cloudinary.com](https://cloudinary.com) for file storage (free tier available)
+- **Database**: Uses Docker MariaDB (no external setup needed)
 
 See `backend/.env.example` for all required variables.
 
-### 2. Using Docker
+### Manual Docker Commands
+
+If you prefer manual control:
 
 ```bash
-# Clone this repository
-git clone <repository-url>
-
-# Configure environment (see step 1 above)
-cp backend/.env.example backend/.env
-# Edit backend/.env with your credentials
-
 # Start all services
 docker-compose up --build
 
-# Frontend: http://localhost:5009
-# Backend API: http://localhost:5008
+# Stop all services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild specific service
+docker-compose up --build backend
 ```
 
-### 3. Manual Development Setup
+### Database Management
+
+The database automatically seeds with test data on first run. To reset:
 
 ```bash
-# Configure environment first (see step 1 above)
+# Stop and remove all data
+docker-compose down -v
 
-# Backend
-cd backend
-pnpm install
-pnpm start
-
-# Frontend (in separate terminal)
-cd frontend
-pnpm install
-pnpm dev
+# Start fresh (will re-seed)
+docker-compose up --build
 ```
 
-### 4. Database Setup
-
-```bash
-# Reset and populate database with test data
-cd backend
-node reset-db.js
-```
-
-This creates test accounts:
+**Test Accounts:**
 - Student: `test@test.com` / `1234`
 - Teacher: `test2@test.com` / `1234`
 
@@ -368,10 +385,26 @@ DANGEROUS_DISABLE_ALL_AUTH=true  # Testing only
 
 ## Important Notes
 
-- Database schema is in `schema.sql`
-- Backend hot-reload requires container rebuild
-- Frontend hot-reloads automatically
-- Default test password for imported students: `letmein`
+- Database auto-seeds on first Docker run via `schema.sql`
+- Frontend and backend hot-reload automatically in Docker
+- Use `./start.sh` for easiest setup
+- Use `docker-compose down -v` to reset database
+
+## Quick Commands
+
+```bash
+# Start everything
+./start.sh
+
+# View logs
+docker-compose logs -f
+
+# Stop everything
+docker-compose down
+
+# Reset database
+docker-compose down -v && docker-compose up --build
+```
 
 ## Test Accounts
 

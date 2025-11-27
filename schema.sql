@@ -174,7 +174,7 @@ VALUES
     (5, 4, 5); 
 
 -- Insert dummy Criteria
-INSERT INTO Criteria (reviewID, grade, comments)
+INSERT INTO Criterion (reviewID, grade, comments)
 VALUES
     (1, 85, 'Good job!'),
     (2, 90, 'Excellent work!'),
@@ -192,7 +192,7 @@ VALUES
     (5); 
 
 -- Insert dummy Criteria_Description
-INSERT INTO Criteria_Description (scoreMax, canComment)
+INSERT INTO Criteria_Description (scoreMax, hasScore)
 VALUES
     (100, TRUE),
     (100, TRUE),
