@@ -4,12 +4,11 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAssignments, getClassName, createAssignment, Assignment } from "../util/api"; // Updated imports
 import TabNavigation from "../components/TabNavigation";
-import { importCSV } from "../util/csv";
 import Textbox from "../components/Textbox";
 import Textarea from "../components/Textarea"; // Import Textarea component
 import Modal from "../components/Modal"; // Import Modal component
 import { isTeacher } from "../util/login";
-import { Home, Users, Library, FileUp, Plus } from 'lucide-react'; // Import Lucide React icons and Plus icon
+import { Home, Users, Library, Plus } from 'lucide-react'; // Import Lucide React icons and Plus icon
 import Loader from '../components/Loader'; // Import Loader component
 import { showSuccess, showError } from '../util/toast';
 
@@ -94,12 +93,7 @@ export default function ClassHome() {
           </div>
 
           <div className="ClassHeaderRight">
-            {isTeacher() ? (
-              <Button onClick={() => importCSV(id as string)}>
-                <FileUp className="w-4 h-4 mr-2" /> {/* FileUp Icon */}
-                Add Students via CSV
-              </Button>
-            ) : null}
+            {/* CSV Upload functionality moved to Members tab */}
           </div>
         </div>
 

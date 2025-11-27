@@ -88,67 +88,53 @@ CREATE TABLE Criteria_Description (
     hasScore BOOLEAN DEFAULT TRUE
 );
 
--- TEST VALUES
--- Credentials: test / 1234
+-- Simple credentials for testing
+-- Password for all users: 1234
 INSERT INTO User (id, name, email, is_teacher, hash_pass)
-  VALUES (1, 'test', 'test@test.com', false, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
-         (2, 'test2', 'test2@test.com', true, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
-         (3, 'harsh2', 'canadaharsh2002@gmail.com', false, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf'),
-         (4, 'professor', 'prof@example.com', true, 'bed4efa1d4fdbd954bd3705d6a2a78270ec9a52ecfbfb010c61862af5c76af1761ffeb1aef6aca1bf5d02b3781aa854fabd2b69c790de74e17ecfec3cb6ac4bf');
+VALUES 
+    -- 1 Teacher
+    (1, 'teacher', 'canadaharsh2002@gmail.com', TRUE, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
+    -- 1 Student
+    (2, 'student1', 'jaddpi1@gmail.com', FALSE, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db');
+
 INSERT INTO Assignment(id, courseID, name, rubric)
     VALUES(1,1,"test","test-rubric");
-
--- Insert dummy Users (Students and Teachers)
--- Teachers and Students with proper hash passwords (password: 1234)
-INSERT INTO User (name, email, hash_pass, is_teacher)
-VALUES 
-    -- 2 Teachers
-    ('Indian Shah', 'indianshahishere@gmail.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', TRUE),
-    ('Linda Lewis', 'linda.lewis@example.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', TRUE),
-    -- 1 Student
-    ('John Doe', 'john.doe@example.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', FALSE);
 
 -- Insert dummy Courses
 INSERT INTO Course (teacherID, name)
 VALUES
-    (5, 'Introduction to Computer Science'),
-    (5, 'Data Structures'),
-    (6, 'Databases 101');
+    (1, 'Introduction to Computer Science');
 
 -- Insert dummy Assignments
 INSERT INTO Assignment (courseID, name, rubric)
 VALUES
-    (1, 'Assignment 1', 'Basic Programming Concepts'),
-    (2, 'Assignment 1', 'Arrays and Linked Lists'),
-    (3, 'Assignment 1', 'SQL Basics');
+    (1, 'Assignment 2', 'Basic Programming Concepts');
 
 -- Insert dummy CourseGroups
 INSERT INTO CourseGroup (name, assignmentID)
 VALUES
-    ('Group A', 1),
-    ('Group B', 2),
-    ('Group C', 3);
+    ('Group A', 2);
 
 -- Insert dummy Submissions
 INSERT INTO Submission (path, studentID, assignmentID)
 VALUES
-    ('/submissions/john_doe/assignment1.pdf', 7, 1);
+    ('/submissions/student1/assignment1.pdf', 2, 2);
 
 -- Insert dummy Group_Members
 INSERT INTO Group_Members (groupID, userID, assignmentID)
 VALUES
-    (1, 7, 1);
+    (1, 2, 2);
 
 
 -- Insert dummy User_Courses
 INSERT INTO User_Courses (courseID, userID)
 VALUES
-    (1, 7);
+    (1, 2);
 
 -- Insert dummy Reviews
 INSERT INTO Review (assignmentID, reviewerID, revieweeID)
 VALUES
-    (1, 7, 7); 
+    (2, 2, 2); 
 
 -- Insert dummy Criteria
 INSERT INTO Criterion (reviewID, grade, comments)
@@ -158,16 +144,12 @@ VALUES
 -- Insert dummy Rubrics
 INSERT INTO Rubric (assignmentID)
 VALUES
-    (1),
-    (2),
-    (3); 
+    (2); 
 
 -- Insert dummy Criteria_Description
 INSERT INTO Criteria_Description (scoreMax, hasScore)
 VALUES
-    (100, TRUE),
-    (100, TRUE),
-    (100, FALSE); 
+    (100, TRUE); 
 -- -- Add foreign key constraints
 -- ALTER TABLE Assignment
 --     ADD CONSTRAINT fk_assignment_course
