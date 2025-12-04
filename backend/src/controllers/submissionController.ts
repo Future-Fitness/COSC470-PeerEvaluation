@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { createOrUpdateSubmission, getSubmission, getSubmissionsByAssignment } from '../services/submissionService';
+import { createOrUpdateSubmission, getSubmission, getSubmissionsByAssignment } from '../modules/assignments/services/submissionService';
 import models from '../util/database';
 
 const User = models.User;

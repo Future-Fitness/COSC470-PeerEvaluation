@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import authService from '../services/authService';
+import authService from '../modules/auth/services/authService';
 
 class AuthController {
   async login(req: FastifyRequest, reply: FastifyReply) {

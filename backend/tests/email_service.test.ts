@@ -18,7 +18,7 @@ describe('EmailService', () => {
     // Reset the module to get a fresh instance
     jest.resetModules();
     // Import after mocking
-    emailService = (await import('../src/services/emailService')).default;
+    emailService = (await import('../src/shared/services/emailService')).default;
   });
 
   describe('sendBulkNewStudentEmails', () => {

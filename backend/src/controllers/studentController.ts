@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import studentService from '../services/studentService';
+import studentService from '../modules/students/services/studentService';
 
 interface UploadStudentsRequest extends FastifyRequest {
   body: {
