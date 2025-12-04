@@ -15,7 +15,33 @@ build/
 *.log
 npm-debug.log*
 pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+.vscode/settings.json
+.vscode/launch.json
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Cache directories
+.cache/
+.vite/deps_temp_*/
+.eslintcache
+
+# Lock files (use pnpm-lock.yaml only)
+package-lock.json
+yarn.lock

@@ -21,8 +21,8 @@ type GroupMemberWithUser = {
 };
 
 export async function listGroupMembers(assignmentID: number, groupID: number): Promise<GroupMemberDTO[]> {
-  const GroupMembers = models.Group_Member;
-  const User = models.User;
+  const GroupMembers = (models as unknown as { Group_Member: any }).Group_Member;
+  const User = (models as unknown as { User: any }).User;
 
   const members: GroupMemberWithUser[] = await GroupMembers.findAll({
     where: { groupID, assignmentID },
@@ -44,15 +44,16 @@ export async function listGroupMembers(assignmentID: number, groupID: number): P
     .filter(Boolean) as GroupMemberDTO[];
 }
 
-export async function listStudentGroups(userID: number): Promise<{ userID: number; groupID: string; assignmentID: number }[]> {
-  const GroupMembers = models.Group_Member;
-  const rows = await GroupMembers.findAll({ where: { userID } });
-  return rows.map((r: any) => ({ userID: r.userID, groupID: r.groupID, assignmentID: r.assignmentID }));
+export async function listStudentGroups(userID: number): Promise<{ userID: number; groupID: number; assignmentID: number }[]> {
+  const GroupMembers = (models as unknown as { Group_Member: any }).Group_Member;
+  type Row = { userID: number; groupID: number; assignmentID: number };
+  const rows: Row[] = await GroupMembers.findAll({ where: { userID } });
+  return rows.map((r: Row) => ({ userID: r.userID, groupID: r.groupID, assignmentID: r.assignmentID }));
 }
 
 export async function listUnassignedStudents(assignmentID: number): Promise<GroupMemberDTO[]> {
-  const GroupMembers = models.Group_Member;
-  const User = models.User;
+  const GroupMembers = (models as unknown as { Group_Member: any }).Group_Member;
+  const User = (models as unknown as { User: any }).User;
   const members: GroupMemberWithUser[] = await GroupMembers.findAll({
     where: { groupID: -1, assignmentID },
     include: [{ model: User, attributes: ['id', 'name', 'email'], required: true }],

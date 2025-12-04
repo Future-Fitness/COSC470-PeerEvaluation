@@ -1,26 +1,16 @@
 import { FastifyInstance } from 'fastify';
-import models from '../util/database';
+// import models from '../util/database';
 import { listGroupMembers } from '../services/groupService';
 
-type GroupMemberWithUser = {
-    userID: number;
-    groupID: string;
-    assignmentID: number;
-    User?: {
-        id: number;
-        name: string;
-        email: string;
-    };
-};
+// Removed unused local type GroupMemberWithUser
 
 export default async function (app: FastifyInstance) {
-    const GroupMembers = models.Group_Member;
-    const User = models.User;
+    // models kept if needed for future enhancements
     
     app.get<{ Params: { assignmentID: number, groupID: string } }>('/list_group_members/:assignmentID/:groupID', async (req, resp) => {
         try {
-            const aID = req.params.assignmentID;
-            const gID = req.params.groupID;
+            const aID = Number(req.params.assignmentID);
+            const gID = Number(req.params.groupID);
             console.log(`Fetching members for group ${gID} in assignment ${aID}`);
             
             const groupMembers = await listGroupMembers(aID, gID);

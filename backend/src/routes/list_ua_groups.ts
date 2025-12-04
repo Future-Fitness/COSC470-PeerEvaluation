@@ -1,11 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import models from '../util/database';
+// import models from '../util/database';
 import { listUnassignedStudents } from '../services/groupService';
 
 
 export default async function (app: FastifyInstance) {
-    const GroupMembers = models.Group_Member;
-    const User = models.User;
+    // using service layer; no direct model access here
     
     app.get<{ Params: { assignmentID: number } }>('/list_ua_groups/:assignmentID', async (req, resp) => {
         try {
