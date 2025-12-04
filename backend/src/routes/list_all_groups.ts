@@ -1,19 +1,15 @@
 import { FastifyInstance } from 'fastify';
-import models from '../util/database';
+// import models from '../util/database';
+import { listAllGroups } from '../services/groupListService';
 
 export default async function (app: FastifyInstance) {
-    const CourseGroup = models.CourseGroup;
+    // using service layer; no direct model access here
     app.get<{ Params: { assignmentID: number } }>('/list_all_groups/:assignmentID', async (req, resp) => {
         try {
             const aID = req.params.assignmentID;
             console.log(`Fetching all groups for assignment ${aID}`);
             
-            const groups = await CourseGroup.findAll({
-                where: {
-                    assignmentID: aID
-                }
-            });
-            
+            const groups = await listAllGroups(aID);
             console.log(`Found ${groups.length} groups`);
             resp.send(groups);
         } catch (error) {

@@ -6,6 +6,7 @@ A collaborative peer review platform for educational settings, allowing teachers
 
 - [Requirements](#requirements)
 - [Getting Started](#getting-started)
+- [Documentation](#documentation)
 - [Architecture Overview](#architecture-overview)
 - [Authentication Flow](#authentication-flow)
 - [API Endpoints](#api-endpoints)
@@ -32,6 +33,7 @@ cd COSC470-PeerEvaluation
 
 # Configure environment
 cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 # Edit backend/.env with your credentials (see below)
 
 # Start everything with Docker
@@ -54,20 +56,23 @@ This will:
 **Important:** Set up your environment variables before running.
 
 ```bash
-# Copy the example environment file
+# Copy the example environment files
 cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 
 # Edit backend/.env with your actual credentials:
 # - MySQL database credentials (uses Docker MariaDB by default)
 # - Cloudinary API credentials (for file storage)
 # - Backend server port (default: 5008)
+
+# Frontend .env contains test account credentials for development
 ```
 
 **Required credentials:**
 - **Cloudinary**: Sign up at [cloudinary.com](https://cloudinary.com) for file storage (free tier available)
 - **Database**: Uses Docker MariaDB (no external setup needed)
 
-See `backend/.env.example` for all required variables.
+See `backend/.env.example` and `frontend/.env.example` for all required variables.
 
 ### Manual Docker Commands
 
@@ -102,6 +107,35 @@ docker-compose up --build
 **Test Accounts:**
 - Student: Username `test` / Password `1234` (or use email `test@test.com` for OTP login)
 - Teacher: Username `test2` / Password `1234` (or use email `test2@test.com` for OTP login)
+
+## Documentation
+
+Comprehensive documentation is available in the following files:
+
+- **[PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Complete project structure, architecture patterns, and file organization
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines, coding standards, and development workflow
+- **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)** - Detailed local development setup and troubleshooting
+- **[DEVELOPMENT_TASKS.md](docs/DEVELOPMENT_TASKS.md)** - Development roadmap and planned features
+- **[backend/ARCHITECTURE.md](backend/ARCHITECTURE.md)** - Backend architecture and API details
+- **[backend/STUDENT_MANAGEMENT.md](backend/STUDENT_MANAGEMENT.md)** - Student management documentation
+
+### Package Manager
+
+This project uses **pnpm** as the package manager for the monorepo workspace:
+
+```bash
+# Install pnpm globally
+npm install -g pnpm
+
+# Install dependencies
+pnpm install
+
+# Run commands for specific workspace
+pnpm --filter backend <command>
+pnpm --filter frontend <command>
+```
+
+**Note:** We've standardized on pnpm to ensure consistent dependency resolution across the monorepo. `package-lock.json` files have been removed in favor of `pnpm-lock.yaml`.
 
 ## Architecture Overview
 
