@@ -95,7 +95,9 @@ VALUES
     -- 1 Teacher
     (1, 'teacher', 'canadaharsh2002@gmail.com', TRUE, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
     -- 1 Student
-    (2, 'student1', 'jaddpi1@gmail.com', FALSE, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db');
+    (2, 'student1', 'jaddpi1@gmail.com', FALSE, 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db'),
+    -- Insert a test student user
+    (3, 'Test', 'student1234@example.com', FALSE, SHA2('password', 256));
 
 -- Insert dummy Courses
 INSERT INTO Course (teacherID, name)

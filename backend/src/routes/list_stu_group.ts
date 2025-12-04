@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import models from '../util/database';
+import { listStudentGroups } from '../services/groupService';
 
 export default async function (app: FastifyInstance) {
     const GroupMembers = models.Group_Member;
@@ -7,11 +8,7 @@ export default async function (app: FastifyInstance) {
     app.get<{ Params: { studentID: string } }>('/list_stu_group/:studentID', async (req, resp) => {
         const sID = parseInt(req.params.studentID, 10);
         try {
-            const groups = await GroupMembers.findAll({
-                where: {
-                    userID: sID
-                }
-            });
+            const groups = await listStudentGroups(sID);
             resp.send(groups);
         } catch (error) {
             console.error('Error fetching student groups:', error);
